@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1386626312 source:/home/kuba/github/obrazy/obrazy/main.c
+	<stdio.h>
+	<stdlib.h>
+	"naglowki.h"
+
+1386626508 /home/kuba/github/obrazy/obrazy/naglowki.h
+	<stdlib.h>
+	<math.h>
+	<time.h>
+
