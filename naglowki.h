@@ -16,6 +16,8 @@
 #define DIM_FAIL -1
 #define STOP -1
 #define WORK 1
+#define WYM_X 0
+#define WYM_Y 1
 
 typedef struct element
 {
@@ -24,6 +26,7 @@ typedef struct element
     int odcienie;
     int wymiary[2+1]; // macierz [x,y]
     char comment[MAXCOMMENT];
+    int **obraz;
 } element;
 
 element *push(element *, element *);
@@ -36,6 +39,8 @@ int sprawdz_wymiary(FILE *pFile, element *temp);
 int sprawdz_odcienie(FILE *pFile, element *temp);
 int pobierz_obraz(FILE *pFile, element *temp);
 void pobierz_tablice(FILE *pFile, element *temp);
+void mallocuj_tablice(element *temp);
+void zwolnij_tablice(element *temp);
 
 
 element * wczytajobraz(element *lista)
@@ -133,8 +138,37 @@ int sprawdz_odcienie(FILE *pFile, element *temp)
     }
     return STOP;
 }
+void mallocuj_tablice(element *temp)
+{
+    int licznik=0;
+    temp->obraz = (int**)malloc(temp->wymiary[WYM_X] * sizeof(int*));
+
+    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
+        temp->obraz[licznik] = (int*)malloc(temp->wymiary[WYM_Y] * sizeof(int));
+}
+void zwolnij_tablice(element *temp)
+{
+    int licznik=0;
+    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
+        free(temp->obraz[licznik]);
+    free(temp->obraz);
+}
 void pobierz_tablice(FILE *pFile, element *temp)
 {
+    mallocuj_tablice(temp);
+    int licznik_y=0, licznik_x=0;
+    for(licznik_y=0; licznik_y<temp->wymiary[WYM_Y]; licznik_y++)
+    {
+        for(licznik_x=0; licznik_x<temp->wymiary[WYM_X]; licznik_x++)
+            fscanf(pFile, "%d", &temp->obraz[licznik_x][licznik_y] );
+    }
+    for(licznik_y=0; licznik_y<temp->wymiary[WYM_Y]; licznik_y++)
+    {
+        printf("\n");
+        for(licznik_x=0; licznik_x<temp->wymiary[WYM_X]; licznik_x++)
+           printf("%d ", temp->obraz[licznik_x][licznik_y]);
+    }
+    printf("\n");
 
 }
 int sprawdz_wymiary(FILE *pFile, element *temp)

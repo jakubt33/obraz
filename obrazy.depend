@@ -9,12 +9,12 @@
 	<math.h>
 	<time.h>
 
-1386858948 source:/home/kuba/github/obraz/main.c
+1386885866 source:/home/kuba/github/obraz/main.c
 	<stdio.h>
 	<stdlib.h>
 	"naglowki.h"
 
-1386884814 /home/kuba/github/obraz/naglowki.h
+1386887473 /home/kuba/github/obraz/naglowki.h
 	<stdlib.h>
 	<math.h>
 	<time.h>
