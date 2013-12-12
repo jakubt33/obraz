@@ -7,7 +7,6 @@
 int main()
 {
     element *lista=NULL;
-    element *temp;
 
     lista = wczytajobraz(lista);
 

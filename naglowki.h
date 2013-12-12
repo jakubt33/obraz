@@ -5,7 +5,7 @@
 #include <math.h>
 #include <time.h>
 
-#define MAXCOMMENT 100
+#define MAXCOMMENT 50
 #define B_AND_W 49
 #define GR_SCALE 50
 #define COLOR 51
@@ -22,7 +22,7 @@ typedef struct element
     struct element *next;
     char type[2+1];
     int odcienie;
-    char wymiary[2+1]; // macierz [x,y]
+    int wymiary[2+1]; // macierz [x,y]
     char comment[MAXCOMMENT];
 } element;
 
@@ -80,8 +80,6 @@ element * wczytajobraz(element *lista)
         }
         else if ( dzialaj == STOP )
             printf("program napotkał błąd przy odczycie danych obrazu\n");
-
-
     }
 
     free(temp);
@@ -104,6 +102,7 @@ int pobierz_obraz(FILE *pFile, element *temp)
         sprawdz_komentarz(pFile, temp);
         if( sprawdz_odcienie(pFile, temp) )
         {
+            sprawdz_komentarz(pFile, temp);
             pobierz_tablice(pFile, temp);
             return WORK;
         }
@@ -128,6 +127,8 @@ int sprawdz_odcienie(FILE *pFile, element *temp)
 {
     if ( fscanf( pFile, "%d", &temp->odcienie) )
     {
+        char endline=0;
+        while ( endline=fgetc(pFile) != '\n');
         return WORK;
     }
     return STOP;
@@ -143,6 +144,8 @@ int sprawdz_wymiary(FILE *pFile, element *temp)
         if (fscanf(pFile, "%d", &temp->wymiary[1]))
         {
             temp->wymiary[2] = '\0';
+            char endline=0;
+            while ( endline=fgetc(pFile) != '\n');
             return DIM_OK; //or no // dopisac
         }
         else return DIM_FAIL;
@@ -159,6 +162,8 @@ int sprawdz_typ(FILE *pFile, element *temp)
         if( (temp->type[MAGIC_NUMBER] == B_AND_W) || (temp->type[MAGIC_NUMBER] == GR_SCALE) || (temp->type[MAGIC_NUMBER] == COLOR) )
         {
             temp->type[2] = '\0';
+            char endline=0;
+            while ( (endline=fgetc(pFile)) != '\n');
             return TYPE_OK;
         }
         else return BAD_FILE_TYPE;
@@ -167,16 +172,35 @@ int sprawdz_typ(FILE *pFile, element *temp)
 }
 void sprawdz_komentarz(FILE *pFile, element *temp)
 {
-    char test;
-    if( (test = fgetc(pFile)) == '#')
+    char test[2];
+    test[0] = fgetc(pFile);
+    fseek(pFile, -1, SEEK_CUR);
+
+   // printf("test = %c\n", test[0]);
+
+    if( test[0] == '#' )
     {
-        // zspisuje linie komentarza()
+        odczyt_komentarza(pFile, temp); //zrobic zeby laczylo koment w jeden max 50 znakow
         sprawdz_komentarz(pFile, temp);
     }
-    else
+    else fseek(pFile, -1, SEEK_CUR);
+
+}
+int odczyt_komentarza(FILE *pFile, element *temp)
+{
+    int licznik=0;
+    char tempcomment[MAXCOMMENT-1];
+    char znak=0;
+    do
     {
-        fseek(pFile, -1, SEEK_CUR);
-    }
+        znak=fgetc(pFile);
+        tempcomment[licznik] = znak;
+        licznik++;
+    } while ( znak != '\n');
+    tempcomment[licznik] = '\0';
+    strncat(temp->comment, tempcomment, sizeof(temp->comment)-strlen(tempcomment)- 1);
+    temp->comment[MAXCOMMENT-1] = '\0';
+    //printf("\ncomment to :\n%s", temp->comment);
 }
 element *push(element *first, element *newone)
 {
@@ -199,8 +223,11 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("\ntyp obrazu to %s\nwymiary to %d na %d\nilosc odcieni to %d\n", first->type, first->wymiary[0], first->wymiary[1], first->odcienie);
-            first=first->next;      //modyfikuijmy tylko kopie wskaznika!
+            printf("\ntyp obrazu to %s\n", first->type);
+            printf("wymiary to %d na %d\n", first->wymiary[0], first->wymiary[1]);
+            printf("ilosc odcieni to %d\n", first->odcienie);
+            printf("komentarz to:\n%s\n", first->comment);
+            first=first->next; //modyfikuijmy tylko kopie wskaznika!
         }
         while(first!=NULL);
     }
