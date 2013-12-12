@@ -5,21 +5,32 @@
 #include <math.h>
 #include <time.h>
 
-#define MAXCOMMENT 10
+#define MAXCOMMENT 100
+#define B_AND_W 1
+#define GR_SCALE 2
+#define COLOR 3
+#define MAGIC_NUMBER 1
+#define BAD_FILE_TYPE -1
+#define TYPE_OK 1
+#define DIM_OK 1
+
 
 typedef struct element
 {
     struct element *next;
-    int type;
+    char type[2+1];
     int data;
-    // int x, y;
-    //char comment[MAXCOMMENT];
-}element;
+    char wymiary[2+1]; // macierz [x,y]
+    char comment[MAXCOMMENT];
+} element;
 
 element *push(element *, element *);
 void wyswietl(element *);
 element * usun(element *);
 element * wczytajobraz(element*);
+void sprawdz_komentarz(FILE *pFile);
+int sprawdz_typ(FILE *pFile, element *temp);
+int sprawdz_wymiary(FILE *pFile, element *temp);
 
 
 element * wczytajobraz(element *lista)
@@ -28,30 +39,77 @@ element * wczytajobraz(element *lista)
     temp=(element*)malloc(sizeof(element));
 
     FILE * pFile;
-    pFile=fopen("pic.pgm", "rt");
+    pFile=fopen("test.pgm", "rt");
+
     if(pFile==NULL)
     {
         perror("blad otwarcia pliku");
     }
     else
     {
+        sprawdz_komentarz(pFile);
 
-        if( ( temp->type = fgetc(pFile))!='P')
-            printf("zły typ obrazka\n");
-
-        else
+        if ( (sprawdz_typ(pFile, temp)) == TYPE_OK ) //odczytany typ
         {
-            fscanf(pFile, "%d", &temp->type);
-            printf("typ obrazka to P%d\n", temp->type);
-            temp->next=NULL;
-            lista=push(lista, temp);
-            printf("dodano obraz\n");
-        }
+            sprawdz_komentarz(pFile);
+
+            if( sprawdz_wymiary(pFile, temp) == DIM_OK )
+            {
+                sprawdz_komentarz(pFile);
+                //to fajnie, mozna przejsc do pobierania danych do tablicy
+            }
+            else ;//flaga error
+
+        } //odczytrany typ i magic number, flaga ze mamy typ i magic number
+
+        else ;//flaga error
+
+        temp->next=NULL;
+        lista=push(lista, temp);
+        printf("dodano obraz\n");
+
     }
+
     free(temp);
     fclose(pFile);
 
     return lista;
+}
+int sprawdz_wymiary(FILE *pFile, element *temp)
+{
+    fscanf(pFile, "%d", &temp->wymiary[0]);
+    fscanf(pFile, "%d", &temp->wymiary[1]);
+    temp->wymiary[2] = '\0';
+    return DIM_OK; //or no // dopisac
+}
+int sprawdz_typ(FILE *pFile, element *temp)
+{
+    temp->type[0] = fgetc(pFile);
+
+    if(temp->type[0] == 'P')
+    {
+        temp->type[MAGIC_NUMBER] = fgetc(pFile);
+        if( (temp->type[MAGIC_NUMBER] == '1') || (temp->type[MAGIC_NUMBER] == '2') || (temp->type[MAGIC_NUMBER] == '3') )
+        {
+            temp->type[2] = '\0';
+            return TYPE_OK;
+        }
+        else return BAD_FILE_TYPE;
+    }
+    else return BAD_FILE_TYPE;
+}
+void sprawdz_komentarz(FILE *pFile)
+{
+    char test;
+    if( (test = fgetc(pFile)) == '#')
+    {
+        // zspisuje linie komentarza()
+        sprawdz_komentarz(pFile);
+    }
+    else
+    {
+        fseek(pFile, -1, SEEK_CUR);
+    }
 }
 element *push(element *first, element *newone)
 {
@@ -66,7 +124,6 @@ element *push(element *first, element *newone)
 }
 void wyswietl(element *first)
 {
-    //printf("%d", first->data);
     if(first==NULL)
     {
         printf("lista jest pusta\n");
@@ -75,9 +132,10 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("typ obrazu to P%d", first->type);
+            printf("\ntyp obrazu to %s\nwymiary to %d na %d\n", first->type, first->wymiary[0], first->wymiary[1]);
             first=first->next;      //modyfikuijmy tylko kopie wskaznika!
-        }while(first!=NULL);
+        }
+        while(first!=NULL);
     }
 }
 element * usun(element *first)
@@ -91,7 +149,5 @@ element * usun(element *first)
     free(first);
     return NULL;
 }
-
-
 
 #endif // NAGLOWKI_H_INCLUDED

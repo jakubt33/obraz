@@ -9,3 +9,13 @@
 	<math.h>
 	<time.h>
 
+1386626312 source:/home/kuba/github/obraz/main.c
+	<stdio.h>
+	<stdlib.h>
+	"naglowki.h"
+
+1386815183 /home/kuba/github/obraz/naglowki.h
+	<stdlib.h>
+	<math.h>
+	<time.h>
+
