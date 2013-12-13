@@ -17,13 +17,13 @@
 
 1386954243 /home/kuba/github/obraz/init.h
 
-1386968744 /home/kuba/github/obraz/odczyt.h
+1386969091 /home/kuba/github/obraz/odczyt.h
 
-1386968765 /home/kuba/github/obraz/menu.h
+1386969733 /home/kuba/github/obraz/menu.h
 	<stdlib.h>
 	"init.h"
 	"odczyt.h"
 	"edit.h"
 
-1386956636 /home/kuba/github/obraz/edit.h
+1386969635 /home/kuba/github/obraz/edit.h
 

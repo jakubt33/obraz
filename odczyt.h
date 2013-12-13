@@ -59,6 +59,7 @@ element * wczytajobraz(element *temp)
                 sprawdz_komentarz(pFile, temp);
 
                 dzialaj = pobierz_obraz(pFile, temp);
+                temp->czy_zmieniony = NIE;
             }
             else
                 dzialaj=STOP; //flaga error

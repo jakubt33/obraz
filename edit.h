@@ -1,10 +1,10 @@
 #ifndef EDIT_H_INCLUDED
 #define EDIT_H_INCLUDED
 
-void lustrzane_odbicie(element *lista, element *kopie);
+void lustrzane_odbicie(element *kopia);
 void lustro( element *lista);
 
-void lustrzane_odbicie(element *lista, element *kopie)
+void lustrzane_odbicie(element *kopia)
 {
     int znaleziony = NIE;
     printf("podaj numer obrazka który chcesz edytować: ");
@@ -17,7 +17,7 @@ void lustrzane_odbicie(element *lista, element *kopie)
     else
     {
         printf("%d <- to jest numer ktory wybrales\n", numer);
-        if(lista==NULL)
+        if(kopia==NULL)
         {
             printf("lista jest pusta\n");
         }
@@ -25,23 +25,16 @@ void lustrzane_odbicie(element *lista, element *kopie)
         {
             do
             {
-                if ( lista->numer == numer)
+                if ( kopia->numer == numer)
                 {
                     znaleziony = TAK;
                     printf("znaleziono obraz\n");
-                    //utworz_kopie(lista, kopie);
 
-                    //rob zmiany
-
-
-                    // lista->kopia = lista;
-                    // lista->kopia->next = NULL;
-                    // wyswietl( lista->kopia );
-                    // lustro ( lista->kopia );
+                    lustro(kopia);
                 }
-                lista=lista->next; //modyfikuijmy tylko kopie wskaznika!
+                kopia=kopia->next; //modyfikuijmy tylko kopie wskaznika!
             }
-            while(lista!=NULL);
+            while(kopia!=NULL);
         }
         if ( znaleziony == NIE)
             printf("nie znaleziono obrazka o takiej nazwie\n");
@@ -50,7 +43,7 @@ void lustrzane_odbicie(element *lista, element *kopie)
 
 void lustro( element *kopia)
 {
-    //czy_zmieniony = TAK;
+    kopia->czy_zmieniony = TAK;
 }
 
 #endif // EDIT_H_INCLUDED

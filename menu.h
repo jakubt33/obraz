@@ -61,12 +61,12 @@ void menu(element *lista, element *kopie)
             }
             case 2:
             {
-                wyswietl(lista);
+                wyswietl(kopie);
                 break;
             }
             case 31:
             {
-                lustrzane_odbicie( lista, kopie );
+                lustrzane_odbicie( kopie );
                 break;
             }
             case 5:
@@ -99,7 +99,9 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("\n%d. nazwa obrazu to %s\n", first->numer, first->nazwa);
+            printf("\n%d. nazwa obrazu to %s", first->numer, first->nazwa);
+            if(first->czy_zmieniony == TAK) printf("\nobrazek jest zmienieniony\n");
+            else printf("\nobrazek jest niezmienieniony\n");
             printf("typ obrazu to %s\n", first->type);
             printf("wymiary to %d na %d\n", first->wymiary[0], first->wymiary[1]);
             printf("ilosc odcieni to %d\n", first->odcienie);
