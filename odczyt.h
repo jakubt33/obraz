@@ -23,12 +23,16 @@ int pobierz_obraz(FILE *pFile, element *temp);
 void pobierz_tablice(FILE *pFile, element *temp);
 void mallocuj_tablice(element *temp);
 void zwolnij_tablice(element *temp);
-void nazwa_obrazka(element *temp);
+void nazwa_obrazka(element *temp, int *dzialaj);
 
-void nazwa_obrazka(element *temp)
+void nazwa_obrazka(element *temp, int *dzialaj)
 {
     printf("podaj nazwę obrazka do załadowania do bazy:  ");
-    scanf("%19s", temp->nazwa);
+    if ( scanf("%19s", temp->nazwa) != 1 )
+    {
+        error();
+        dzialaj = STOP;
+    }
 }
 element * wczytajobraz(element *nowy)
 {
@@ -37,7 +41,7 @@ element * wczytajobraz(element *nowy)
     element *temp;
     temp=(element*)malloc(sizeof(element));
 
-    nazwa_obrazka(temp);
+    nazwa_obrazka(temp, &dzialaj);
     FILE * pFile;
     pFile=fopen( temp->nazwa, "rt");
 

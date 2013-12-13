@@ -32,27 +32,32 @@ void menu(element *lista)
                "44 - Zmniejsz obraz\n"
                "5 - Zapisz zmienione obrazy\n"
                "6 - Wyjdź\n");
-        int komenda = 0;
-        scanf("%20d", &komenda);
-
-        switch (komenda)
+        int komenda = 0 ;
+        if( scanf("%19d", &komenda) != 1)
         {
-        case 1:
-        {
-            lista = wczytajobraz(lista);
-            break;
+            error();
         }
-        case 2:
+        else
         {
-            wyswietl(lista);
-            break;
-        }
-        case 6:
-        {
-            printf("kończę działanie programu\n");
-            czy_konczyc = TAK;
-            break;
-        }
+            switch (komenda)
+            {
+            case 1:
+            {
+                lista = wczytajobraz(lista);
+                break;
+            }
+            case 2:
+            {
+                wyswietl(lista);
+                break;
+            }
+            case 6:
+            {
+                printf("kończę działanie programu\n");
+                czy_konczyc = TAK;
+                break;
+            }
+            }
         }
     }
 

@@ -3,6 +3,8 @@
 
 #define MAXCOMMENT 50
 
+void error();
+
 typedef struct element
 {
     struct element *next;
@@ -13,5 +15,11 @@ typedef struct element
     int **obraz;
     char nazwa[20];
 } element;
+
+void error()
+{
+    while((getchar()) != '\n');
+    printf("zła komenda\n");
+}
 
 #endif // INIT_H_INCLUDED
