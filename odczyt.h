@@ -23,28 +23,28 @@ int pobierz_obraz(FILE *pFile, element *temp);
 void pobierz_tablice(FILE *pFile, element *temp);
 void mallocuj_tablice(element *temp);
 void zwolnij_tablice(element *temp);
-void nazwa_obrazka(char *nazwa);
+void nazwa_obrazka(element *temp);
 
-void nazwa_obrazka(char *nazwa)
+void nazwa_obrazka(element *temp)
 {
     printf("podaj nazwę obrazka do załadowania do bazy:  ");
-    scanf("%19s", nazwa);
+    scanf("%19s", temp->nazwa);
 }
-element * wczytajobraz(element *lista)
+element * wczytajobraz(element *nowy)
 {
     int dzialaj = WORK;
 
     element *temp;
     temp=(element*)malloc(sizeof(element));
 
-    char nazwa[20];
-    nazwa_obrazka(nazwa);
+    nazwa_obrazka(temp);
     FILE * pFile;
-    pFile=fopen( nazwa, "rt");
+    pFile=fopen( temp->nazwa, "rt");
 
     if(pFile==NULL)
     {
-        perror("blad otwarcia pliku\n");
+        dzialaj = STOP;
+        perror("blad otwarcia pliku");
     }
     else
     {
@@ -65,23 +65,28 @@ element * wczytajobraz(element *lista)
         }
         else
             dzialaj=STOP; //flaga error
-
-        if( dzialaj == WORK )
-        {
-            temp->next=NULL;
-            lista=push(lista, temp);
-            //zwolnij_tablice(temp);
-            printf("dodano obraz\n");
-        }
-        else if ( dzialaj == STOP )
-            printf("program napotkał błąd przy odczycie danych obrazu\n");
-
         fclose(pFile);
     }
+    //free(temp);
 
-    free(temp);
-
-    return lista;
+    if( dzialaj == WORK )
+    {
+        temp->next=NULL;
+        nowy = push(nowy, temp);
+        zwolnij_tablice(temp);
+        return nowy;
+        printf("dodano obraz\n");
+    }
+    else
+        printf("program napotkał błąd przy odczycie danych obrazu\n");
+    return nowy;
+}
+void zwolnij_tablice(element *temp)
+{
+    int licznik=0;
+    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
+        free(temp->obraz[licznik]);
+    free(temp->obraz);
 }
 int pobierz_obraz(FILE *pFile, element *temp)
 {
@@ -196,7 +201,7 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
     test[0] = fgetc(pFile);
     fseek(pFile, -1, SEEK_CUR);
 
-   // printf("test = %c\n", test[0]);
+    // printf("test = %c\n", test[0]);
 
     if( test[0] == '#' )
     {
@@ -216,7 +221,8 @@ int odczyt_komentarza(FILE *pFile, element *temp)
         znak=fgetc(pFile);
         tempcomment[licznik] = znak;
         licznik++;
-    } while ( znak != '\n');
+    }
+    while ( znak != '\n');
     tempcomment[licznik] = '\0';
     strncat(temp->comment, tempcomment, sizeof(temp->comment)-strlen(tempcomment)- 1);
     temp->comment[MAXCOMMENT-1] = '\0';

@@ -3,8 +3,9 @@
 
 int main()
 {
-    element *lista=NULL;
+    element *lista = NULL;
     menu(lista);
+    lista = usun(lista);
 
     return 0;
 }

@@ -11,6 +11,7 @@ typedef struct element
     int wymiary[2+1]; // macierz [x,y]
     char comment[MAXCOMMENT];
     int **obraz;
+    char nazwa[20];
 } element;
 
 #endif // INIT_H_INCLUDED

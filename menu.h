@@ -32,15 +32,14 @@ void menu(element *lista)
                "44 - Zmniejsz obraz\n"
                "5 - Zapisz zmienione obrazy\n"
                "6 - Wyjdź\n");
-        int komenda=0;
+        int komenda = 0;
         scanf("%20d", &komenda);
 
         switch (komenda)
         {
         case 1:
         {
-            element *nowy_obraz;
-            lista = wczytajobraz(nowy_obraz);
+            lista = wczytajobraz(lista);
             break;
         }
         case 2:
@@ -56,7 +55,6 @@ void menu(element *lista)
         }
         }
     }
-    lista=usun(lista);
 
 }
 
@@ -70,7 +68,8 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("\ntyp obrazu to %s\n", first->type);
+            printf("\nnazwa obrazu to %s\n", first->nazwa);
+            printf("typ obrazu to %s\n", first->type);
             printf("wymiary to %d na %d\n", first->wymiary[0], first->wymiary[1]);
             printf("ilosc odcieni to %d\n", first->odcienie);
             printf("komentarz to:\n%s\n", first->comment);
@@ -90,11 +89,5 @@ element * usun(element *first)
     free(first);
     return NULL;
 }
-void zwolnij_tablice(element *temp)
-{
-    int licznik=0;
-    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
-        free(temp->obraz[licznik]);
-    free(temp->obraz);
-}
+
 #endif // MENU_H_INCLUDED
