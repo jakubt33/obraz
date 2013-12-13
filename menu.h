@@ -1,16 +1,20 @@
 #ifndef MENU_H_INCLUDED
 #define MENU_H_INCLUDED
 
+#define NIE 0
+#define TAK 1
+
 #include <stdlib.h>
 #include "init.h"
 #include "odczyt.h"
+#include "edit.h"
 
-#define NIE 0
-#define TAK 1
 
 void menu(element *lista);
 void wyswietl(element *);
 element * usun(element *);
+void zapisz(element *lista);
+
 
 void menu(element *lista)
 {
@@ -20,8 +24,8 @@ void menu(element *lista)
     {
         printf("dostępne funkcje:\n"
                "1 - Dodaj obraz\n"
-               "2 - Wyswietl obraz\n"
-               "31 - Inwersja\n"
+               "2 - Wyswietl bazę obrazów\n"
+               "31 - Lustrzane odbicie\n"
                "32 - Rozjaśnij\n"
                "33 - Przyciemnij\n"
                "34 - Kafelki\n"
@@ -51,6 +55,17 @@ void menu(element *lista)
                 wyswietl(lista);
                 break;
             }
+            case 31:
+            {
+                lustrzane_odbicie( lista );
+                break;
+            }
+            case 5:
+            {
+                printf("zapis zmienionych obrazkow\n");
+                zapisz(lista);
+                break;
+            }
             case 6:
             {
                 printf("kończę działanie programu\n");
@@ -62,7 +77,10 @@ void menu(element *lista)
     }
 
 }
+void zapisz(element *lista)
+{
 
+}
 void wyswietl(element *first)
 {
     if(first==NULL)
@@ -73,7 +91,7 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("\nnazwa obrazu to %s\n", first->nazwa);
+            printf("\n%d. nazwa obrazu to %s\n", first->numer, first->nazwa);
             printf("typ obrazu to %s\n", first->type);
             printf("wymiary to %d na %d\n", first->wymiary[0], first->wymiary[1]);
             printf("ilosc odcieni to %d\n", first->odcienie);

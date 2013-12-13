@@ -1,7 +1,6 @@
 #ifndef ODCZYT_H_INCLUDED
 #define ODCZYT_H_INCLUDED
 
-
 #define B_AND_W 49
 #define GR_SCALE 50
 #define COLOR 51
@@ -10,7 +9,6 @@
 #define WORK 1
 #define WYM_X 0
 #define WYM_Y 1
-
 
 element *push(element *, element *);
 void wyswietl(element *);
@@ -24,6 +22,7 @@ void pobierz_tablice(FILE *pFile, element *temp);
 void mallocuj_tablice(element *temp);
 void zwolnij_tablice(element *temp);
 void nazwa_obrazka(element *temp, int *dzialaj);
+void numeruj(element *first);
 
 void nazwa_obrazka(element *temp, int *dzialaj)
 {
@@ -75,8 +74,9 @@ element * wczytajobraz(element *nowy)
 
     if( dzialaj == WORK )
     {
-        temp->next=NULL;
+        temp->next = NULL;
         nowy = push(nowy, temp);
+        numeruj( nowy );
         zwolnij_tablice(temp);
         return nowy;
         printf("dodano obraz\n");
@@ -84,6 +84,24 @@ element * wczytajobraz(element *nowy)
     else
         printf("program napotkał błąd przy odczycie danych obrazu\n");
     return nowy;
+}
+void numeruj(element *first)
+{
+    int licznik=0;
+    if(first==NULL)
+    {
+        printf("lista jest pusta\n");
+    }
+    else
+    {
+        do
+        {
+            licznik++;
+            first->numer=licznik;
+            first=first->next; //modyfikuijmy tylko kopie wskaznika!
+        }
+        while(first!=NULL);
+    }
 }
 void zwolnij_tablice(element *temp)
 {
