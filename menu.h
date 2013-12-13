@@ -10,13 +10,13 @@
 #include "edit.h"
 
 
-void menu(element *lista, element *kopie);
+void menu(element *lista);
 void wyswietl(element *);
 element * usun(element *);
-void zapisz(element *lista, element *kopie);
+void zapisz(element *lista);
 
 
-void menu(element *lista, element *kopie)
+void menu(element *lista)
 {
     int czy_konczyc = NIE;
 
@@ -54,25 +54,25 @@ void menu(element *lista, element *kopie)
                 temp = wczytajobraz(temp);
 
                 lista = zapisz_bufor(lista, temp);
-                kopie = zapisz_bufor(kopie, temp);
+                //kopie = zapisz_bufor(kopie, temp);
 
                 zwolnij_tablice(temp);
                 break;
             }
             case 2:
             {
-                wyswietl(kopie);
+                wyswietl(lista);
                 break;
             }
             case 31:
             {
-                lustrzane_odbicie( kopie );
+                lustrzane_odbicie( lista );
                 break;
             }
             case 5:
             {
                 printf("zapis zmienionych obrazkow\n");
-                zapisz(lista, kopie);
+                zapisz(lista);
                 break;
             }
             case 6:
@@ -85,13 +85,13 @@ void menu(element *lista, element *kopie)
         }
     }
 }
-void zapisz(element *lista, element *kopia)
+void zapisz(element *lista)
 {
-    while(kopia!=NULL)
+    while(lista!=NULL)
     {
-        if ( kopia->czy_zmieniony == TAK)
+        if ( lista->czy_zmieniony == TAK)
         {
-            printf("co zrobic z tym obrazem: %s?\n1 - nadpisz\t2 - zapisz jako\t3 - nie zapisuj\t", kopia->nazwa);
+            printf("co zrobic z tym obrazem: %s?\n1 - nadpisz\t2 - zapisz jako\t3 - nie zapisuj\t", lista->nazwa);
             char polecenie=0;
             if ( scanf("%d", &polecenie) != 1 )
             {
@@ -104,7 +104,7 @@ void zapisz(element *lista, element *kopia)
                     case 1:
                     {
                         //nadpisanie kopii na liste
-                        kopia->czy_zmieniony = NIE;
+                        lista->czy_zmieniony = NIE;
 
                         printf("nadpisuje\n");
                         break;
@@ -120,10 +120,9 @@ void zapisz(element *lista, element *kopia)
                         break;
                     }
                 }
-                printf("\n%d. nazwa obrazu to %s", first->numer, first->nazwa);
+                printf("\n%d. nazwa obrazu to %s", lista->numer, lista->nazwa);
             }
         }
-        kopia=kopia->next; //modyfikuijmy tylko kopie wskaznika!
         lista=lista->next;
     }
 }

@@ -4,12 +4,12 @@
 int main()
 {
     element *lista = NULL;
-    element *kopie = NULL;
+   // element *kopie = NULL;
 
-    menu(lista, kopie);
+    menu(lista);
 
     lista = usun(lista);
-    kopie = usun(kopie);
+    //kopie = usun(kopie);
 
     return 0;
 }
