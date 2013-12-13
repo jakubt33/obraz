@@ -1,16 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
-
-#include "naglowki.h"
-
+#include "menu.h"
 
 int main()
 {
     element *lista=NULL;
-
-    lista = wczytajobraz(lista);
-
-    wyswietl(lista);
+    menu(lista);
 
     return 0;
 }
