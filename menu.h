@@ -10,13 +10,13 @@
 #include "edit.h"
 
 
-void menu(element *lista);
+void menu(element *lista, element *kopie);
 void wyswietl(element *);
 element * usun(element *);
 void zapisz(element *lista);
 
 
-void menu(element *lista)
+void menu(element *lista, element *kopie)
 {
     int czy_konczyc = NIE;
 
@@ -47,7 +47,16 @@ void menu(element *lista)
             {
             case 1:
             {
-                lista = wczytajobraz(lista);
+
+                element *temp;
+                temp=(element*)malloc(sizeof(element));
+
+                temp = wczytajobraz(temp);
+
+                lista = zapisz_bufor(lista, temp);
+                kopie = zapisz_bufor(kopie, temp);
+
+                zwolnij_tablice(temp);
                 break;
             }
             case 2:
@@ -57,7 +66,7 @@ void menu(element *lista)
             }
             case 31:
             {
-                lustrzane_odbicie( lista );
+                lustrzane_odbicie( lista, kopie );
                 break;
             }
             case 5:
@@ -75,7 +84,6 @@ void menu(element *lista)
             }
         }
     }
-
 }
 void zapisz(element *lista)
 {

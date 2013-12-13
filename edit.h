@@ -1,10 +1,10 @@
 #ifndef EDIT_H_INCLUDED
 #define EDIT_H_INCLUDED
 
-void lustrzane_odbicie(element *lista);
+void lustrzane_odbicie(element *lista, element *kopie);
 void lustro( element *lista);
 
-void lustrzane_odbicie(element *lista)
+void lustrzane_odbicie(element *lista, element *kopie)
 {
     int znaleziony = NIE;
     printf("podaj numer obrazka który chcesz edytować: ");
@@ -29,11 +29,15 @@ void lustrzane_odbicie(element *lista)
                 {
                     znaleziony = TAK;
                     printf("znaleziono obraz\n");
-                    //utworz_kopie(lista, kopia);
-                   // lista->kopia = lista;
-                   // lista->kopia->next = NULL;
-                   // wyswietl( lista->kopia );
-                   // lustro ( lista->kopia );
+                    //utworz_kopie(lista, kopie);
+
+                    //rob zmiany
+
+
+                    // lista->kopia = lista;
+                    // lista->kopia->next = NULL;
+                    // wyswietl( lista->kopia );
+                    // lustro ( lista->kopia );
                 }
                 lista=lista->next; //modyfikuijmy tylko kopie wskaznika!
             }
@@ -43,10 +47,7 @@ void lustrzane_odbicie(element *lista)
             printf("nie znaleziono obrazka o takiej nazwie\n");
     }
 }
-void utworz_kopie(element *kopia)
-{
 
-}
 void lustro( element *kopia)
 {
     //czy_zmieniony = TAK;

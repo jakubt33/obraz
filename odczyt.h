@@ -33,12 +33,9 @@ void nazwa_obrazka(element *temp, int *dzialaj)
         dzialaj = STOP;
     }
 }
-element * wczytajobraz(element *nowy)
+element * wczytajobraz(element *temp)
 {
     int dzialaj = WORK;
-
-    element *temp;
-    temp=(element*)malloc(sizeof(element));
 
     nazwa_obrazka(temp, &dzialaj);
     FILE * pFile;
@@ -75,15 +72,19 @@ element * wczytajobraz(element *nowy)
     if( dzialaj == WORK )
     {
         temp->next = NULL;
-        nowy = push(nowy, temp);
-        numeruj( nowy );
-        zwolnij_tablice(temp);
-        return nowy;
-        printf("dodano obraz\n");
+        return temp;
     }
+
     else
         printf("program napotkał błąd przy odczycie danych obrazu\n");
-    return nowy;
+    return temp;
+}
+element * zapisz_bufor(element *glowny, element *temp)
+{
+    glowny = push(glowny, temp);
+    temp->next = NULL;
+    numeruj( glowny );
+    return glowny;
 }
 void numeruj(element *first)
 {
@@ -97,8 +98,9 @@ void numeruj(element *first)
         do
         {
             licznik++;
-            first->numer=licznik;
+            first->numer=first->numer=licznik;
             first=first->next; //modyfikuijmy tylko kopie wskaznika!
+            //printf("petla\t");
         }
         while(first!=NULL);
     }
