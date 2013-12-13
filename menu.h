@@ -13,7 +13,7 @@
 void menu(element *lista, element *kopie);
 void wyswietl(element *);
 element * usun(element *);
-void zapisz(element *lista);
+void zapisz(element *lista, element *kopie);
 
 
 void menu(element *lista, element *kopie)
@@ -72,7 +72,7 @@ void menu(element *lista, element *kopie)
             case 5:
             {
                 printf("zapis zmienionych obrazkow\n");
-                zapisz(lista);
+                zapisz(lista, kopie);
                 break;
             }
             case 6:
@@ -85,9 +85,47 @@ void menu(element *lista, element *kopie)
         }
     }
 }
-void zapisz(element *lista)
+void zapisz(element *lista, element *kopia)
 {
+    while(kopia!=NULL)
+    {
+        if ( kopia->czy_zmieniony == TAK)
+        {
+            printf("co zrobic z tym obrazem: %s?\n1 - nadpisz\t2 - zapisz jako\t3 - nie zapisuj\t", kopia->nazwa);
+            char polecenie=0;
+            if ( scanf("%d", &polecenie) != 1 )
+            {
+                error();
+            }
+            else
+            {
+                switch (polecenie)
+                {
+                    case 1:
+                    {
+                        //nadpisanie kopii na liste
+                        kopia->czy_zmieniony = NIE;
 
+                        printf("nadpisuje\n");
+                        break;
+                    }
+                    case 2:
+                    {
+                        printf("zapisjue jako\n");
+                        break;
+                    }
+                    case 3:
+                    {
+                        printf("nie zapisuje\n");
+                        break;
+                    }
+                }
+                printf("\n%d. nazwa obrazu to %s", first->numer, first->nazwa);
+            }
+        }
+        kopia=kopia->next; //modyfikuijmy tylko kopie wskaznika!
+        lista=lista->next;
+    }
 }
 void wyswietl(element *first)
 {
@@ -124,3 +162,4 @@ element * usun(element *first)
 }
 
 #endif // MENU_H_INCLUDED
+
