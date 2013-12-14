@@ -15,15 +15,15 @@
 
 1386893952 /home/kuba/github/obraz/naglowki.h
 
-1386954243 /home/kuba/github/obraz/init.h
+1387043601 /home/kuba/github/obraz/init.h
 
-1386980242 /home/kuba/github/obraz/odczyt.h
+1387043791 /home/kuba/github/obraz/odczyt.h
 
-1386980365 /home/kuba/github/obraz/menu.h
+1387034553 /home/kuba/github/obraz/menu.h
 	<stdlib.h>
 	"init.h"
 	"odczyt.h"
 	"edit.h"
 
-1386973530 /home/kuba/github/obraz/edit.h
+1387029554 /home/kuba/github/obraz/edit.h
 

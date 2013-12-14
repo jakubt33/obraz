@@ -23,6 +23,7 @@ void mallocuj_tablice(element *temp);
 void zwolnij_tablice(element *temp);
 void nazwa_obrazka(element *temp, int *dzialaj);
 void numeruj(element *first);
+element * zapisz_bufor(element *glowny, element *temp);
 
 void nazwa_obrazka(element *temp, int *dzialaj)
 {
@@ -33,8 +34,12 @@ void nazwa_obrazka(element *temp, int *dzialaj)
         dzialaj = STOP;
     }
 }
-element * wczytajobraz(element *temp)
+element * wczytajobraz(element *lista)
 {
+
+    element *temp;
+    temp=(element*)malloc(sizeof(element));
+
     int dzialaj = WORK;
     nazwa_obrazka(temp, &dzialaj);
     FILE * pFile;
@@ -68,16 +73,15 @@ element * wczytajobraz(element *temp)
         fclose(pFile);
     }
     //free(temp);
-
     if( dzialaj == WORK )
     {
         temp->next = NULL;
-        return temp;
+        lista = zapisz_bufor(lista, temp);
+        return lista;
     }
-
     else
         printf("program napotkał błąd przy odczycie danych obrazu\n");
-    return temp;
+    return lista;
 }
 element * zapisz_bufor(element *glowny, element *temp)
 {
@@ -100,7 +104,6 @@ void numeruj(element *first)
             licznik++;
             first->numer=first->numer=licznik;
             first=first->next; //modyfikuijmy tylko kopie wskaznika!
-            //printf("petla\t");
         }
         while(first!=NULL);
     }
@@ -108,12 +111,13 @@ void numeruj(element *first)
 void zwolnij_tablice(element *temp)
 {
     int licznik=0;
-    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
+    for(licznik = 0; licznik < temp->wymx; licznik++)
         free(temp->obraz[licznik]);
     free(temp->obraz);
 }
 int pobierz_obraz(FILE *pFile, element *temp)
 {
+
     switch ( temp->type[MAGIC_NUMBER] )
     {
     case B_AND_W:
@@ -150,6 +154,15 @@ int pobierz_obraz(FILE *pFile, element *temp)
 }
 int sprawdz_odcienie(FILE *pFile, element *temp)
 {
+    char test ;
+    do
+    {
+        test = fgetc(pFile);
+    }
+    while (test > '0' && test <= '9');
+    fseek(pFile, -1, SEEK_CUR);
+
+
     if ( fscanf( pFile, "%d", &temp->odcienie) )
     {
         char endline=0;
@@ -161,18 +174,18 @@ int sprawdz_odcienie(FILE *pFile, element *temp)
 void mallocuj_tablice(element *temp)
 {
     int licznik=0;
-    temp->obraz = (int**)malloc(temp->wymiary[WYM_X] * sizeof(int*));
+    temp->obraz = (int**)malloc(temp->wymx * sizeof(int*));
 
-    for(licznik = 0; licznik < temp->wymiary[WYM_X]; licznik++)
-        temp->obraz[licznik] = (int*)malloc(temp->wymiary[WYM_Y] * sizeof(int));
+    for(licznik = 0; licznik < temp->wymx; licznik++)
+        temp->obraz[licznik] = (int*)malloc(temp->wymy * sizeof(int));
 }
 void pobierz_tablice(FILE *pFile, element *temp)
 {
     mallocuj_tablice(temp);
     int licznik_y=0, licznik_x=0;
-    for(licznik_y=0; licznik_y<temp->wymiary[WYM_Y]; licznik_y++)
+    for(licznik_y=0; licznik_y<temp->wymy; licznik_y++)
     {
-        for(licznik_x=0; licznik_x<temp->wymiary[WYM_X]; licznik_x++)
+        for(licznik_x=0; licznik_x<temp->wymx; licznik_x++)
             fscanf(pFile, "%d", &temp->obraz[licznik_x][licznik_y] );
     }
 
@@ -189,14 +202,23 @@ void pobierz_tablice(FILE *pFile, element *temp)
 }
 int sprawdz_wymiary(FILE *pFile, element *temp)
 {
-    if (fscanf(pFile, "%d", &temp->wymiary[0]))
+    char test ;
+    do
     {
-        if (fscanf(pFile, "%d", &temp->wymiary[1]))
+        test = fgetc(pFile);
+    }
+    while (test > '0' && test <= '9');
+    fseek(pFile, -1, SEEK_CUR);
+
+
+
+    if (fscanf(pFile, "%d", &temp->wymx))
+    {
+        if (fscanf(pFile, "%d", &temp->wymy))
         {
-            temp->wymiary[2] = '\0';
             char endline=0;
             while ( endline=fgetc(pFile) != '\n');
-            return WORK; //or no // dopisac
+            return WORK;
         }
         else return STOP;
     }
@@ -214,6 +236,7 @@ int sprawdz_typ(FILE *pFile, element *temp)
             temp->type[2] = '\0';
             char endline=0;
             while ( (endline=fgetc(pFile)) != '\n');
+
             return WORK;
         }
         else return STOP;
@@ -222,16 +245,21 @@ int sprawdz_typ(FILE *pFile, element *temp)
 }
 void sprawdz_komentarz(FILE *pFile, element *temp)
 {
-    char test[2];
-    test[0] = fgetc(pFile);
+    char test = 0;
+    test = fgetc(pFile);
+
     fseek(pFile, -1, SEEK_CUR);
 
     // printf("test = %c\n", test[0]);
 
-    if( test[0] == '#' )
+    if( test == '#' )
     {
-        odczyt_komentarza(pFile, temp); //zrobic zeby laczylo koment w jeden max 50 znakow
+        odczyt_komentarza(pFile, temp);
         sprawdz_komentarz(pFile, temp);
+    }
+    else if (test == '\n')
+    {
+        printf("test wykryl 'n'\n");
     }
     else fseek(pFile, -1, SEEK_CUR);
 
@@ -239,19 +267,27 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
 int odczyt_komentarza(FILE *pFile, element *temp)
 {
     int licznik=0;
-    char tempcomment[MAXCOMMENT-1];
+    char tempcomment[MAXCOMMENT];
     char znak=0;
     do
     {
         znak=fgetc(pFile);
-        tempcomment[licznik] = znak;
+
+        if ( licznik < MAXCOMMENT-1)
+            tempcomment[licznik] = znak;
+
         licznik++;
+
     }
     while ( znak != '\n');
-    tempcomment[licznik] = '\0';
-    strncat(temp->comment, tempcomment, sizeof(temp->comment)-strlen(tempcomment)- 1);
-    temp->comment[MAXCOMMENT-1] = '\0';
-    //printf("\ncomment to :\n%s", temp->comment);
+    if ( licznik < MAXCOMMENT-1)
+        tempcomment[licznik] = '\0';
+    else
+        tempcomment[MAXCOMMENT-1] = '\0';
+
+    strncpy(temp->comment, tempcomment, sizeof(temp->comment)-strlen(tempcomment));
+    temp->comment[strlen(temp->comment)] = '\0';
+    printf("\ncomment to :\n%s", temp->comment);
 }
 element *push(element *first, element *newone)
 {

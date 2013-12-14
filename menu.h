@@ -13,8 +13,8 @@
 void menu(element *lista);
 void wyswietl(element *);
 element * usun(element *);
-void zapisz(element *lista);
-void nadpisz(element * lista);
+void zapisz1(element *lista);
+void zapisz2(element * lista, int polecenie);
 
 
 void menu(element *lista)
@@ -49,13 +49,10 @@ void menu(element *lista)
             case 1:
             {
 
-                element *temp;
-                temp=(element*)malloc(sizeof(element));
+                lista = wczytajobraz(lista);
 
 
-                temp = wczytajobraz(temp);
-
-                lista = zapisz_bufor(lista, temp);
+                //free(temp); wlaczneie tego powoduje nie dopisywanie kolejnych obrazow do listy, tyko lacza sie komentarze
                 //kopie = zapisz_bufor(kopie, temp);
                 //zwolnij_tablice(temp);
                 break;
@@ -73,7 +70,7 @@ void menu(element *lista)
             case 5:
             {
                 printf("zapis zmienionych obrazkow\n");
-                zapisz(lista);
+                zapisz1(lista);
                 break;
             }
             case 6:
@@ -86,14 +83,14 @@ void menu(element *lista)
         }
     }
 }
-void zapisz(element *lista)
+void zapisz1(element *lista)
 {
     while(lista!=NULL)
     {
         if ( lista->czy_zmieniony == TAK)
         {
             printf("co zrobic z tym obrazem: %s?\n1 - nadpisz\t2 - zapisz jako\t3 - nie zapisuj\t", lista->nazwa);
-            char polecenie=0;
+            int polecenie=0;
             if ( scanf("%d", &polecenie) != 1 )
             {
                 error();
@@ -102,27 +99,23 @@ void zapisz(element *lista)
             {
                 switch (polecenie)
                 {
-                    case 1:
-                    {
-                        //nadpisanie kopii na liste
-                        printf("nadpisuje\n");
-                        nadpisz(lista);
-
-                        lista->czy_zmieniony = NIE;
-
-
-                        break;
-                    }
-                    case 2:
-                    {
-                        printf("zapisjue jako\n");
-                        break;
-                    }
-                    case 3:
-                    {
-                        printf("nie zapisuje\n");
-                        break;
-                    }
+                case 1:
+                {
+                    printf("nadpisuje\n");
+                    zapisz2(lista, polecenie);
+                    break;
+                }
+                case 2:
+                {
+                    printf("zapisjue jako\n");
+                    zapisz2(lista, polecenie);
+                    break;
+                }
+                case 3:
+                {
+                    printf("nie zapisuje\n");
+                    break;
+                }
                 }
                 printf("\n%d. nazwa obrazu to %s\n", lista->numer, lista->nazwa);
             }
@@ -130,37 +123,66 @@ void zapisz(element *lista)
         lista=lista->next;
     }
 }
-void nadpisz(element * lista)
+void zapisz2(element * lista, int polecenie)
 {
+
     FILE *pFile;
-    pFile = fopen( lista->nazwa , "wat");
-
-    if(pFile==NULL)
+    int dzialaj = NIE;
+    char nazwa[MAXNAZWA];
+    if(polecenie == 1)
     {
-        perror("blad otwarcia pliku");
+        strcpy(nazwa, lista->nazwa);
+        printf("zapisz");
+        dzialaj = TAK;
     }
-    else
+    else if(polecenie ==2)
     {
-        printf("zaczynam nadpisywac\n");
-        fprintf(pFile, "%s\n", lista->type);
-        fprintf(pFile, "%s", lista->comment);
-        fprintf(pFile, "%d %d\n", lista->wymiary[WYM_X], lista->wymiary[WYM_Y]);
-        fprintf(pFile, "%d\n", lista->odcienie);
+        printf("podaj nazwe pod jaką chcesz zapiszać ten obraz: ");
+        if ( scanf("%19s", nazwa) != 1 )
+            error();
+        else dzialaj = TAK;
+    }
+    if(dzialaj == TAK)
+    {
+        pFile = fopen( nazwa , "wat");
 
-        int licznik_x=0, licznik_y=0;
-        for(licznik_y=0; licznik_y<lista->wymiary[WYM_Y]; licznik_y++)
+        if(pFile==NULL)
         {
-            for(licznik_x=0; licznik_x<lista->wymiary[WYM_X]; licznik_x++)
-            printf("%d ", lista->obraz[licznik_x][licznik_y]);
+            perror("blad otwarcia pliku");
         }
-
-        for(licznik_y=0; licznik_y<lista->wymiary[WYM_Y]; licznik_y++)
+        else
         {
-            for(licznik_x=0; licznik_x<lista->wymiary[WYM_X]; licznik_x++)
-            fprintf(pFile, "%d ", lista->obraz[licznik_x][licznik_y]);
-       }
-        fflush(pFile);
-        fclose(pFile);
+            printf("zaczynam nadpisywac\n");
+
+            printf( "%s\n", lista->type);
+            printf( "%d %d\n", lista->wymx, lista->wymy);
+            printf( "%d\n", lista->odcienie);
+            printf( "%s", lista->comment);
+
+            fprintf(pFile, "%s\n", lista->type);
+            fprintf(pFile, "%s", lista->comment);
+            fprintf(pFile, "%d %d\n", lista->wymx, lista->wymy);
+            fprintf(pFile, "%d\n", lista->odcienie);
+
+            /*
+            for(licznik_y=0; licznik_y<lista->wymiary[WYM_Y]; licznik_y++)
+            {
+                for(licznik_x=0; licznik_x<lista->wymiary[WYM_X]; licznik_x++)
+                printf("%d ", lista->obraz[licznik_x][licznik_y]);
+            }
+            */
+
+            int licznik_x=0, licznik_y=0;
+            for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+            {
+                for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+                    fprintf(pFile, "%d ", lista->obraz[licznik_x][licznik_y]);
+            }
+
+            fflush(pFile);
+            fclose(pFile);
+            lista->czy_zmieniony = NIE;
+        }
     }
 }
 void wyswietl(element *first)
@@ -177,11 +199,12 @@ void wyswietl(element *first)
             if(first->czy_zmieniony == TAK) printf("\nobrazek jest zmienieniony\n");
             else printf("\nobrazek jest niezmienieniony\n");
             printf("typ obrazu to %s\n", first->type);
-            printf("wymiary to %d na %d\n", first->wymiary[0], first->wymiary[1]);
+            printf("wymiary to %d na %d\n", first->wymx, first->wymy);
             printf("ilosc odcieni to %d\n", first->odcienie);
             printf("komentarz to:\n%s\n", first->comment);
 
-            int licznik_x=0, licznik_y=0;
+
+            /*int licznik_x=0, licznik_y=0;
             for(licznik_y=0; licznik_y<first->wymiary[WYM_Y]; licznik_y++)
             {
                 printf("\n");
@@ -189,6 +212,7 @@ void wyswietl(element *first)
                     printf("%d ", first->obraz[licznik_x][licznik_y]);
             }
             printf("\n");
+            */
 
             first=first->next; //modyfikuijmy tylko kopie wskaznika!
 

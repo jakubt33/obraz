@@ -32,7 +32,7 @@ void lustrzane_odbicie(element *lista)
 
                     lustro(lista);
                 }
-                lista=lista->next; //modyfikuijmy tylko kopie wskaznika!
+                lista=lista->next;
             }
             while(lista!=NULL);
         }
