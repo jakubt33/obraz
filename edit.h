@@ -1,11 +1,15 @@
 #ifndef EDIT_H_INCLUDED
 #define EDIT_H_INCLUDED
 
-void lustrzane_odbicie(element *lista);
-void lustro( element *lista);
+void edycja(element *lista, int komenda);
 void odbij_poziomo( element *lista);
+void odbij_pionowo( element *lista);
+void pociemnij( element *lista);
+void rozjasnij( element *lista);
+void black_white( element *lista);
+void kontury( element *lista);
 
-void lustrzane_odbicie(element *lista)
+void edycja(element *lista, int komenda)
 {
     int znaleziony = NIE;
     printf("podaj numer obrazka który chcesz edytować: ");
@@ -30,8 +34,44 @@ void lustrzane_odbicie(element *lista)
                 {
                     znaleziony = TAK;
                     printf("znaleziono obraz\n");
-
-                    odbij_poziomo(lista);
+                    switch (komenda)
+                    {
+                    case 31:
+                    {
+                        odbij_poziomo( lista );
+                        break;
+                    }
+                    case 32:
+                    {
+                        odbij_pionowo( lista );
+                        break;
+                    }
+                    case 33:
+                    {
+                        pociemnij( lista );
+                        break;
+                    }
+                    case 34:
+                    {
+                        rozjasnij( lista );
+                        break;
+                    }
+                    case 35:
+                    {
+                        black_white( lista );
+                        break;
+                    }
+                    case 36:
+                    {
+                        kontury( lista );
+                        break;
+                    }
+                    default:
+                    {
+                        printf("brak takiej opcji\n");
+                        break;
+                    }
+                    }
                 }
                 lista=lista->next;
             }
@@ -51,8 +91,8 @@ void odbij_poziomo( element *lista)
         for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
         {
             temp= lista->obraz[licznik_x][licznik_y];
-            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-licznik_y];
-            lista->obraz[licznik_x][lista->wymy-licznik_y] = temp;
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-1-licznik_y];
+            lista->obraz[licznik_x][lista->wymy-1-licznik_y] = temp;
         }
     }
     lista->czy_zmieniony = TAK;
@@ -61,16 +101,156 @@ void odbij_pionowo( element *lista)
 {
     int licznik_y=0, licznik_x=0;
     int temp=0;
-    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
     {
-        for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx/2; licznik_x++)
         {
-            temp= lista->obraz[licznik_x][licznik_y];
-            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-licznik_y];
-            lista->obraz[licznik_x][lista->wymy-licznik_y] = temp;
+            temp = lista->obraz[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[lista->wymx-1-licznik_x][licznik_y];
+            lista->obraz[lista->wymx-1-licznik_x][licznik_y] = temp;
         }
     }
     lista->czy_zmieniony = TAK;
 }
+int pobierz_moc(element *lista)
+{
+    printf("podaj jak moc filtra w sklali 1-%d: ", lista->odcienie);
+    int moc=0;
+    if ( scanf("%d", &moc) != 1 )
+    {
+        error();
+    }
+    else if (moc>lista->odcienie)
+    {
+        printf("moc poza zakresem\n");
+        return STOP;
+    }
+    else return moc;
+}
+void pociemnij( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
+        int temp=0;
 
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] >= moc )
+                    lista->obraz[licznik_x][licznik_y] -= moc ;
+                else lista->obraz[licznik_x][licznik_y] = 0;
+            }
+        }
+
+        lista->czy_zmieniony = TAK;
+    }
+}
+void rozjasnij( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
+        int temp=0;
+
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
+                    lista->obraz[licznik_x][licznik_y] += moc ;
+                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+            }
+        }
+
+        lista->czy_zmieniony = TAK;
+    }
+}
+void black_white( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
+        int temp=0;
+
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
+                    lista->obraz[licznik_x][licznik_y] = 0 ;
+                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+            }
+        }
+        lista->czy_zmieniony = TAK;
+    }
+}
+
+void kontury( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
+        int temp=0;
+
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
+                    lista->obraz[licznik_x][licznik_y] = 0 ;
+                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+            }
+        }
+
+        int licznik=0;
+        int **t;
+        t = (int**)malloc(lista->wymx * sizeof(int*));
+
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+        int test=0;
+        for(licznik_y=1; licznik_y<lista->wymy-1; licznik_y++)
+        {
+            for(licznik_x=1; licznik_x<lista->wymx-1; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x+1][licznik_y] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x-1][licznik_y] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
+                    test++;
+
+                if(test > 0)
+                    t[licznik_x][licznik_y] = 0 ;
+
+                else
+                    t[licznik_x][licznik_y] = lista->odcienie;
+                test=0;
+            }
+        }
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+            }
+        }
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            free(t[licznik]);
+        free(t);
+
+        lista->czy_zmieniony = TAK;
+    }
+}//kontury 1. fltr pociemniajacy + filtr jasniejacy i roznica ich to kontyr
 #endif // EDIT_H_INCLUDED
+

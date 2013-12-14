@@ -26,10 +26,12 @@ void menu(element *lista)
         printf("dostępne funkcje:\n"
                "1 - Dodaj obraz\n"
                "2 - Wyswietl bazę obrazów\n"
-               "31 - Lustrzane odbicie\n"
-               "32 - Rozjaśnij\n"
-               "33 - Przyciemnij\n"
-               "34 - Kafelki\n"
+               "31 - Odbij poziomo\n"
+               "32 - Odbij pionowo\n"
+               "33 - Pociemnij\n"
+               "34 - Rozjasnij\n"
+               "35 - Black&White\n"
+               "36 - Znajdz kontury\n"
                "35 - Rozmycie Gaussa\n"
                "41 - Obrót w prawo\n"
                "42 - Obrót w lewo\n"
@@ -62,11 +64,6 @@ void menu(element *lista)
                 wyswietl(lista);
                 break;
             }
-            case 31:
-            {
-                lustrzane_odbicie( lista );
-                break;
-            }
             case 5:
             {
                 printf("zapis zmienionych obrazkow\n");
@@ -78,6 +75,10 @@ void menu(element *lista)
                 printf("kończę działanie programu\n");
                 czy_konczyc = TAK;
                 break;
+            }
+            default:
+            {
+                edycja(lista, komenda);
             }
             }
         }

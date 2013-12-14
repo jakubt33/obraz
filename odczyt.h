@@ -117,7 +117,6 @@ void zwolnij_tablice(element *temp)
 }
 int pobierz_obraz(FILE *pFile, element *temp)
 {
-
     switch ( temp->type[MAGIC_NUMBER] )
     {
     case B_AND_W:
