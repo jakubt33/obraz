@@ -36,7 +36,6 @@ void nazwa_obrazka(element *temp, int *dzialaj)
 element * wczytajobraz(element *temp)
 {
     int dzialaj = WORK;
-
     nazwa_obrazka(temp, &dzialaj);
     FILE * pFile;
     pFile=fopen( temp->nazwa, "rt");
@@ -176,7 +175,9 @@ void pobierz_tablice(FILE *pFile, element *temp)
         for(licznik_x=0; licznik_x<temp->wymiary[WYM_X]; licznik_x++)
             fscanf(pFile, "%d", &temp->obraz[licznik_x][licznik_y] );
     }
+
     /*
+//po odczycie od razu wyswietla
     for(licznik_y=0; licznik_y<temp->wymiary[WYM_Y]; licznik_y++)
     {
         printf("\n");
@@ -184,8 +185,7 @@ void pobierz_tablice(FILE *pFile, element *temp)
            printf("%d ", temp->obraz[licznik_x][licznik_y]);
     }
     printf("\n");
-    */ //po odczycie od razu wyswietla
-
+    */
 }
 int sprawdz_wymiary(FILE *pFile, element *temp)
 {
