@@ -113,11 +113,12 @@ void zapisz1(element *lista)
                 }
                 case 3:
                 {
+                    lista->czy_zmieniony = NIE;
                     printf("nie zapisuje\n");
                     break;
                 }
                 }
-                printf("\n%d. nazwa obrazu to %s\n", lista->numer, lista->nazwa);
+                //printf("\n%d. nazwa obrazu to %s\n", lista->numer, lista->nazwa);
             }
         }
         lista=lista->next;
@@ -152,12 +153,7 @@ void zapisz2(element * lista, int polecenie)
         }
         else
         {
-            printf("zaczynam nadpisywac\n");
-
-            printf( "%s\n", lista->type);
-            printf( "%d %d\n", lista->wymx, lista->wymy);
-            printf( "%d\n", lista->odcienie);
-            printf( "%s", lista->comment);
+            printf("zaczynam zapis...\n");
 
             fprintf(pFile, "%s\n", lista->type);
             fprintf(pFile, "%s", lista->comment);
@@ -165,6 +161,11 @@ void zapisz2(element * lista, int polecenie)
             fprintf(pFile, "%d\n", lista->odcienie);
 
             /*
+            printf( "%s\n", lista->type);
+            printf( "%d %d\n", lista->wymx, lista->wymy);
+            printf( "%d\n", lista->odcienie);
+            printf( "%s", lista->comment);
+
             for(licznik_y=0; licznik_y<lista->wymiary[WYM_Y]; licznik_y++)
             {
                 for(licznik_x=0; licznik_x<lista->wymiary[WYM_X]; licznik_x++)

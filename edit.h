@@ -3,6 +3,7 @@
 
 void lustrzane_odbicie(element *lista);
 void lustro( element *lista);
+void odbij_poziomo( element *lista);
 
 void lustrzane_odbicie(element *lista)
 {
@@ -30,7 +31,7 @@ void lustrzane_odbicie(element *lista)
                     znaleziony = TAK;
                     printf("znaleziono obraz\n");
 
-                    lustro(lista);
+                    odbij_poziomo(lista);
                 }
                 lista=lista->next;
             }
@@ -41,8 +42,34 @@ void lustrzane_odbicie(element *lista)
     }
 }
 
-void lustro( element *lista)
+void odbij_poziomo( element *lista)
 {
+    int licznik_y=0, licznik_x=0;
+    int temp=0;
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
+        {
+            temp= lista->obraz[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-licznik_y];
+            lista->obraz[licznik_x][lista->wymy-licznik_y] = temp;
+        }
+    }
+    lista->czy_zmieniony = TAK;
+}
+void odbij_pionowo( element *lista)
+{
+    int licznik_y=0, licznik_x=0;
+    int temp=0;
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
+        {
+            temp= lista->obraz[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-licznik_y];
+            lista->obraz[licznik_x][lista->wymy-licznik_y] = temp;
+        }
+    }
     lista->czy_zmieniony = TAK;
 }
 

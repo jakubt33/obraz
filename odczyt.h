@@ -267,7 +267,7 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
 int odczyt_komentarza(FILE *pFile, element *temp)
 {
     int licznik=0;
-    char tempcomment[MAXCOMMENT];
+    char tempcomment[MAXCOMMENT]={'\0'};
     char znak=0;
     do
     {
@@ -285,9 +285,9 @@ int odczyt_komentarza(FILE *pFile, element *temp)
     else
         tempcomment[MAXCOMMENT-1] = '\0';
 
-    strncpy(temp->comment, tempcomment, sizeof(temp->comment)-strlen(tempcomment));
-    temp->comment[strlen(temp->comment)] = '\0';
-    printf("\ncomment to :\n%s", temp->comment);
+    strcpy(temp->comment, tempcomment/*, sizeof(temp->comment)-strlen(tempcomment)-strlen(temp->comment)-1*/);
+    //temp->comment[strlen(temp->comment)] = '\0';
+    //printf("\ncomment to :\n%s", temp->comment);
 }
 element *push(element *first, element *newone)
 {
