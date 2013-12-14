@@ -8,6 +8,8 @@ void pociemnij( element *lista);
 void rozjasnij( element *lista);
 void black_white( element *lista);
 void kontury( element *lista);
+void obrot_90P(element *lista);
+void obrot_90L(element *lista);
 
 void edycja(element *lista, int komenda)
 {
@@ -66,6 +68,16 @@ void edycja(element *lista, int komenda)
                         kontury( lista );
                         break;
                     }
+                    case 41:
+                    {
+                        obrot_90P( lista );
+                        break;
+                    }
+                    case 42:
+                    {
+                        obrot_90L( lista );
+                        break;
+                    }
                     default:
                     {
                         printf("brak takiej opcji\n");
@@ -81,6 +93,73 @@ void edycja(element *lista, int komenda)
             printf("nie znaleziono obrazka o takiej nazwie\n");
     }
 }
+void obrot_90P(element *lista)
+{
+    int licznik=0;
+    int temp_x=lista->wymx;
+    lista->wymx=lista->wymy;
+    lista->wymy=temp_x;
+
+    int **t;
+    t = (int**)malloc(lista->wymx * sizeof(int*));
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+
+    int licznik_y=0,licznik_x=0;
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            t[licznik_x][licznik_y] = lista->obraz[licznik_y][lista->wymx-1-licznik_x];
+
+    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
+
+   for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+
+    lista->czy_zmieniony = TAK;
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        free(t[licznik]);
+    free(t);
+}
+void obrot_90L(element *lista)
+{
+    int licznik=0;
+    int temp_x=lista->wymx;
+    lista->wymx=lista->wymy;
+    lista->wymy=temp_x;
+
+    int **t;
+    t = (int**)malloc(lista->wymx * sizeof(int*));
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+
+    int licznik_y=0,licznik_x=0;
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            t[licznik_x][licznik_y] = lista->obraz[lista->wymy-1-licznik_y][lista->wymx-1-licznik_x];
+
+    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
+
+   for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+
+    lista->czy_zmieniony = TAK;
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        free(t[licznik]);
+    free(t);
+}
+
 
 void odbij_poziomo( element *lista)
 {
@@ -190,7 +269,6 @@ void black_white( element *lista)
         lista->czy_zmieniony = TAK;
     }
 }
-
 void kontury( element *lista)
 {
     int moc=pobierz_moc(lista);
@@ -251,6 +329,6 @@ void kontury( element *lista)
 
         lista->czy_zmieniony = TAK;
     }
-}//kontury 1. fltr pociemniajacy + filtr jasniejacy i roznica ich to kontyr
+}
 #endif // EDIT_H_INCLUDED
 

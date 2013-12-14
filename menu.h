@@ -31,10 +31,10 @@ void menu(element *lista)
                "33 - Pociemnij\n"
                "34 - Rozjasnij\n"
                "35 - Black&White\n"
-               "36 - Znajdz kontury\n"
-               "35 - Rozmycie Gaussa\n"
-               "41 - Obrót w prawo\n"
-               "42 - Obrót w lewo\n"
+               "36 - Znajdz kontury\n"//moc nic nie zmienia
+               "37 - Rozmycie Gaussa\n" //dopisac
+               "41 - Obrót w prawo o 90 stopni\n"
+               "42 - Obrót w lewo o 90 stopni\n"
                "43 - Obrót o 180\n"
                "44 - Zmniejsz obraz\n"
                "5 - Zapisz zmienione obrazy\n"
