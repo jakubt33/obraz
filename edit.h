@@ -14,6 +14,7 @@ void kontrast (element *lista);
 void przytnij(element *lista);
 void rozciagnij(element *lista);
 void rozmycie (element *lista);
+void sukces();
 
 
 void edycja(element *lista, int komenda)
@@ -28,7 +29,6 @@ void edycja(element *lista, int komenda)
     }
     else
     {
-        printf("%d <- to jest numer ktory wybrales\n", numer);
         if(lista==NULL)
         {
             printf("lista jest pusta\n");
@@ -46,51 +46,61 @@ void edycja(element *lista, int komenda)
                     case 31:
                     {
                         odbij_poziomo( lista );
+                        sukces();
                         break;
                     }
                     case 32:
                     {
                         odbij_pionowo( lista );
+                        sukces();
                         break;
                     }
                     case 33:
                     {
                         pociemnij( lista );
+                        sukces();
                         break;
                     }
                     case 34:
                     {
                         rozjasnij( lista );
+                        sukces();
                         break;
                     }
                     case 35:
                     {
                         black_white( lista );
+                        sukces();
                         break;
                     }
                     case 36:
                     {
                         kontury( lista );
+                        sukces();
                         break;
                     }
                     case 37:
                     {
                         kontrast( lista );
+                        sukces();
                         break;
                     }
                     case 38:
                     {
                         rozmycie( lista );
+                        sukces();
                         break;
                     }
                     case 41:
                     {
                         obrot_90P( lista );
+                        sukces();
                         break;
                     }
                     case 42:
                     {
                         obrot_90L( lista );
+                        sukces();
                         break;
                     }
                     case 43:
@@ -101,11 +111,13 @@ void edycja(element *lista, int komenda)
                     case 44:
                     {
                         przytnij( lista );
+                        sukces();
                         break;
                     }
                     case 45:
                     {
-                        rozciagnij( lista ); //naprawic
+                        rozciagnij( lista );
+                        sukces();
                         break;
                     }
                     default:
@@ -123,6 +135,10 @@ void edycja(element *lista, int komenda)
             printf("nie znaleziono obrazka o takiej nazwie\n");
     }
 }
+void sukces()
+{
+    printf("edycja zakończona sukcesem!\n");
+}
 void rozmycie (element *lista)
 {
     int licznik_x=0, licznik_y=0, licznik=0, **temp;
@@ -136,41 +152,78 @@ void rozmycie (element *lista)
     else if (moc>0 && lista->wymx>2*moc && lista->wymy>2*moc)
     {
         temp = (int**)malloc(lista->wymx * sizeof(int*));
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
 
-    for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
-    {
-        for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+        int sumator=0, i=0, j=0;
+        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
         {
-            int sumator=0, i=0, j=0;
+            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+            {
+                sumator=0, i=0, j=0;
 
-            for(i=-moc; i<=moc; i++)
-                for(j=-moc; j<=moc; j++)
-                    sumator+= lista->obraz[licznik_x+i][licznik_y+j] ;
+                for(i=-moc; i<=moc; i++)
+                    for(j=-moc; j<=moc; j++)
+                        sumator+= lista->obraz[licznik_x+i][licznik_y+j] ;
 
-            temp[licznik_x][licznik_y] = sumator/(((2*moc) + 1)*((2*moc)+1));
-
+                temp[licznik_x][licznik_y] = sumator/(((2*moc) + 1)*((2*moc)+1));
+            }
         }
-    }
-    for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
-    {
-        for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+        moc--;
+        while(moc>0)
         {
-           lista->obraz[licznik_x][licznik_y] = temp[licznik_x][licznik_y];
-        }
-    }
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        free(temp[licznik]);
-    free(temp);
+            int k=0;
+            for(k=0; k<2; k++)//musi sie wykonać 2 razy, dla storny lewej i prawej
+            {
+                int ty=moc;
+                for(licznik_x=ty; licznik_x<lista->wymx-ty; licznik_x++)
+                {
+                    sumator=0, i=0, j=0;
+                    for(i=-moc; i<=moc; i++)
+                        for(j=-moc; j<=moc; j++)
+                            sumator+= lista->obraz[licznik_x+i][ty+j] ;
 
-    lista->czy_zmieniony = TAK;
+                    temp[licznik_x][moc] = sumator/((2*moc + 1)*(2*moc+1));
+                }
+                ty = lista->wymy-moc;
+            }
+            for(k=0; k<2; k++) //musi sie wykonać 2 razy, dla storny lewej i prawej
+            {
+                int tx=moc;
+                for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+                {
+                    sumator=0, i=0, j=0;
+
+                    for(i=-moc; i<=moc; i++)
+                        for(j=-moc; j<=moc; j++)
+                            sumator+= lista->obraz[tx+i][licznik_y+j] ;
+
+                    temp[moc][licznik_y] = sumator/((2*moc + 1)*(2*moc+1));
+                }
+                tx = lista->wymx-moc;
+            }
+            moc--;
+        }
+
+        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
+        {
+            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+            {
+                lista->obraz[licznik_x][licznik_y] = temp[licznik_x][licznik_y];
+            }
+        }
+
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            free(temp[licznik]);
+        free(temp);
+
+        lista->czy_zmieniony = TAK;
     }
 }
 void przytnij(element *lista)
 {
     printf("obrazek ma wymiary %d na %d\n", lista->wymx, lista->wymy);
-    printf("podaj o ile piseli przyciąć: \n");
+    printf("podaj o ile pikseli przyciąć: \n");
     int od_lewej=0, od_prawej=0 ,od_gory=0 ,od_dolu=0, licznik_x=0, licznik_y=0;
 
     printf("o strony lewej: \n");
@@ -288,7 +341,7 @@ void rozciagnij(element *lista)
             free(t);
         }
         else
-        printf("wybrano złe współczynniki\n");
+            printf("wybrano złe współczynniki\n");
 
     }
 }
@@ -304,13 +357,12 @@ void kontrast(element *lista)
         }
     }
     int srednia=((sumator)/((lista->wymx)*(lista->wymy)));
-    printf("srednia to %d\n", srednia);
     printf("moc %d - neutralna, większa=większy kontrast\n", srednia);
 
     int moc = pobierz_moc(lista);
     if(moc != STOP )
     {
-        printf("moc to %d\n", moc);
+        printf("wybrana moc to %d\n", moc);
         for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
         {
             for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
@@ -323,8 +375,6 @@ void kontrast(element *lista)
         }
         lista->czy_zmieniony=TAK;
     }
-
-
 }
 void obrot_90P(element *lista)
 {
@@ -562,4 +612,9 @@ void kontury( element *lista)
     }
 }
 #endif // EDIT_H_INCLUDED
+
+
+
+
+
 

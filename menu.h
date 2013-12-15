@@ -19,12 +19,15 @@ void zapisz2(element * lista, int polecenie);
 
 void menu(element *lista)
 {
+    int komendy[14] = {31,32,33,34,35,36,37,38,39,41,42,43,44,45};
     int czy_konczyc = NIE;
     while( czy_konczyc == NIE )
     {
-        printf("dostępne funkcje:\n"
+        printf("\n-------------------\n"
+               "dostępne funkcje:\n"
                "1 - Dodaj obraz\n"
                "2 - Wyswietl bazę obrazów\n"
+               "-------------------\n"
                "31 - Odbij poziomo\n"
                "32 - Odbij pionowo\n"
                "33 - Pociemnij\n"
@@ -32,13 +35,15 @@ void menu(element *lista)
                "35 - Black&White\n"
                "36 - Znajdz kontury\n"
                "37 - Zmień kontrast\n"
-               "38 - Rozmycie Gaussa\n" //dopisac warunki brzegowe
+               "38 - Rozmycie\n" //dopisac warunki brzegowe
                "39 - Negatyw\n" //dorobic
+               "-------------------\n"
                "41 - Obrót w prawo o 90 stopni\n"
                "42 - Obrót w lewo o 90 stopni\n"
                "43 - Obrót o 180\n" //dopisac
                "44 - Przytnij obraz\n"
                "45 - Rozciągnij\n"
+               "-------------------\n"
                "5 - Zapisz zmienione obrazy\n"
                "6 - Wyjdź\n");
         int komenda = 0 ;
@@ -54,8 +59,6 @@ void menu(element *lista)
             {
 
                 lista = wczytajobraz(lista);
-
-
                 //free(temp); wlaczneie tego powoduje nie dopisywanie kolejnych obrazow do listy, tyko lacza sie komentarze
                 //kopie = zapisz_bufor(kopie, temp);
                 //zwolnij_tablice(temp);
@@ -80,7 +83,16 @@ void menu(element *lista)
             }
             default:
             {
-                edycja(lista, komenda);
+                int licznik=0, czy_znaleziono = NIE;
+                for(licznik=0;licznik<14;licznik++)
+                {
+                    if(komendy[licznik] == komenda)
+                        czy_znaleziono = TAK;
+                }
+                if(czy_znaleziono == TAK)
+                    edycja(lista, komenda);
+                else printf("nie ma takiej opcji\n");
+
             }
             }
         }
@@ -104,24 +116,23 @@ void zapisz1(element *lista)
                 {
                 case 1:
                 {
-                    printf("nadpisuje\n");
+                    printf("nadpisuję...\n");
                     zapisz2(lista, polecenie);
                     break;
                 }
                 case 2:
                 {
-                    printf("zapisjue jako\n");
+                    printf("zapisuję jako...\n");
                     zapisz2(lista, polecenie);
                     break;
                 }
                 case 3:
                 {
                     lista->czy_zmieniony = NIE;
-                    printf("nie zapisuje\n");
+                    printf("nie zapisuję\n");
                     break;
                 }
                 }
-                //printf("\n%d. nazwa obrazu to %s\n", lista->numer, lista->nazwa);
             }
         }
         lista=lista->next;
@@ -136,12 +147,11 @@ void zapisz2(element * lista, int polecenie)
     if(polecenie == 1)
     {
         strcpy(nazwa, lista->nazwa);
-        printf("zapisz");
         dzialaj = TAK;
     }
     else if(polecenie ==2)
     {
-        printf("podaj nazwe pod jaką chcesz zapiszać ten obraz: ");
+        printf("podaj nazwe pod jaką chcesz zapisać ten obraz: ");
         if ( scanf("%19s", nazwa) != 1 )
             error();
         else dzialaj = TAK;
@@ -163,18 +173,6 @@ void zapisz2(element * lista, int polecenie)
             fprintf(pFile, "%d %d\n", lista->wymx, lista->wymy);
             fprintf(pFile, "%d\n", lista->odcienie);
 
-            /*
-            printf( "%s\n", lista->type);
-            printf( "%d %d\n", lista->wymx, lista->wymy);
-            printf( "%d\n", lista->odcienie);
-            printf( "%s", lista->comment);
-
-            for(licznik_y=0; licznik_y<lista->wymiary[WYM_Y]; licznik_y++)
-            {
-                for(licznik_x=0; licznik_x<lista->wymiary[WYM_X]; licznik_x++)
-                printf("%d ", lista->obraz[licznik_x][licznik_y]);
-            }
-            */
 
             int licznik_x=0, licznik_y=0;
             for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
@@ -202,24 +200,12 @@ void wyswietl(element *first)
             printf("\n%d. nazwa obrazu to %s", first->numer, first->nazwa);
             if(first->czy_zmieniony == TAK) printf("\nobrazek jest zmienieniony\n");
             else printf("\nobrazek jest niezmienieniony\n");
-            printf("typ obrazu to %s\n", first->type);
-            printf("wymiary to %d na %d\n", first->wymx, first->wymy);
+            printf("typ obrazu to %s\t", first->type);
+            printf("wymiary to %d na %d\t", first->wymx, first->wymy);
             printf("ilosc odcieni to %d\n", first->odcienie);
             printf("komentarz to:\n%s\n", first->comment);
 
-
-            /*int licznik_x=0, licznik_y=0;
-            for(licznik_y=0; licznik_y<first->wymiary[WYM_Y]; licznik_y++)
-            {
-                printf("\n");
-                for(licznik_x=0; licznik_x<first->wymiary[WYM_X]; licznik_x++)
-                    printf("%d ", first->obraz[licznik_x][licznik_y]);
-            }
-            printf("\n");
-            */
-
-            first=first->next; //modyfikuijmy tylko kopie wskaznika!
-
+            first=first->next;
         }
         while(first!=NULL);
     }
