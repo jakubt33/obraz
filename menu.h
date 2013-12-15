@@ -20,7 +20,6 @@ void zapisz2(element * lista, int polecenie);
 void menu(element *lista)
 {
     int czy_konczyc = NIE;
-
     while( czy_konczyc == NIE )
     {
         printf("dostępne funkcje:\n"
@@ -31,10 +30,10 @@ void menu(element *lista)
                "33 - Pociemnij\n"
                "34 - Rozjasnij\n"
                "35 - Black&White\n"
-               "36 - Znajdz kontury\n"//moc nic nie zmienia
+               "36 - Znajdz kontury\n"
                "37 - Zmień kontrast\n"
-               "38 - Negatyw\n"
-               "38 - Rozmycie Gaussa\n" //dopisac
+               "38 - Rozmycie Gaussa\n" //dopisac warunki brzegowe
+               "39 - Negatyw\n" //dorobic
                "41 - Obrót w prawo o 90 stopni\n"
                "42 - Obrót w lewo o 90 stopni\n"
                "43 - Obrót o 180\n" //dopisac

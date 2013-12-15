@@ -13,6 +13,7 @@ void obrot_90L(element *lista);
 void kontrast (element *lista);
 void przytnij(element *lista);
 void rozciagnij(element *lista);
+void rozmycie (element *lista);
 
 
 void edycja(element *lista, int komenda)
@@ -77,6 +78,11 @@ void edycja(element *lista, int komenda)
                         kontrast( lista );
                         break;
                     }
+                    case 38:
+                    {
+                        rozmycie( lista );
+                        break;
+                    }
                     case 41:
                     {
                         obrot_90P( lista );
@@ -115,6 +121,50 @@ void edycja(element *lista, int komenda)
         }
         if ( znaleziony == NIE)
             printf("nie znaleziono obrazka o takiej nazwie\n");
+    }
+}
+void rozmycie (element *lista)
+{
+    int licznik_x=0, licznik_y=0, licznik=0, **temp;
+
+    printf("podaj moc filtra, standardowo 1-5\n");
+    int moc=0;
+    if ( scanf("%d", &moc) != 1 )
+    {
+        error();
+    }
+    else if (moc>0 && lista->wymx>2*moc && lista->wymy>2*moc)
+    {
+        temp = (int**)malloc(lista->wymx * sizeof(int*));
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+    for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
+    {
+        for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+        {
+            int sumator=0, i=0, j=0;
+
+            for(i=-moc; i<=moc; i++)
+                for(j=-moc; j<=moc; j++)
+                    sumator+= lista->obraz[licznik_x+i][licznik_y+j] ;
+
+            temp[licznik_x][licznik_y] = sumator/(((2*moc) + 1)*((2*moc)+1));
+
+        }
+    }
+    for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
+    {
+        for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+        {
+           lista->obraz[licznik_x][licznik_y] = temp[licznik_x][licznik_y];
+        }
+    }
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        free(temp[licznik]);
+    free(temp);
+
+    lista->czy_zmieniony = TAK;
     }
 }
 void przytnij(element *lista)
@@ -197,7 +247,7 @@ void rozciagnij(element *lista)
         {
             error();
         }
-        else
+        else if (wspy>0 && wspx>0)
         {
             int licznik=0, licznik_x=0, licznik_y=0, n_wymx=0, n_wymy=0;
             n_wymx = lista->wymx * wspx;
@@ -237,13 +287,14 @@ void rozciagnij(element *lista)
                 free(t[licznik]);
             free(t);
         }
+        else
+        printf("wybrano złe współczynniki\n");
 
     }
 }
-
 void kontrast(element *lista)
 {
-    unsigned long int sumator=0;
+    unsigned long int sumator=0; //zrobic zabezpieczenie przed max rozmiarem
     int licznik_x=0, licznik_y=0;
     for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
     {
