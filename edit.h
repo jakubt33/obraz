@@ -10,6 +10,7 @@ void black_white( element *lista);
 void kontury( element *lista);
 void obrot_90P(element *lista);
 void obrot_90L(element *lista);
+void kontrast (element *lista);
 
 void edycja(element *lista, int komenda)
 {
@@ -68,6 +69,11 @@ void edycja(element *lista, int komenda)
                         kontury( lista );
                         break;
                     }
+                    case 37:
+                    {
+                        kontrast( lista );
+                        break;
+                    }
                     case 41:
                     {
                         obrot_90P( lista );
@@ -92,6 +98,40 @@ void edycja(element *lista, int komenda)
         if ( znaleziony == NIE)
             printf("nie znaleziono obrazka o takiej nazwie\n");
     }
+}
+void kontrast(element *lista)
+{
+    unsigned long int sumator=0;
+    int licznik_x=0, licznik_y=0;
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            sumator += lista->obraz[licznik_x][licznik_y];
+        }
+    }
+    int srednia=((sumator)/((lista->wymx)*(lista->wymy)));
+    printf("srednia to %d\n", srednia);
+    printf("moc %d - neutralna, większa=większy kontrast\n", srednia);
+
+    int moc = pobierz_moc(lista);
+    if(moc != STOP )
+    {
+    printf("moc to %d\n", moc);
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            float wsp = (moc-srednia)*(srednia-lista->obraz[licznik_x][licznik_y])/(srednia);
+            lista->obraz[licznik_x][licznik_y] -=wsp;
+            if(lista->obraz[licznik_x][licznik_y]<0) lista->obraz[licznik_x][licznik_y]=0;
+            if(lista->obraz[licznik_x][licznik_y]>lista->odcienie) lista->obraz[licznik_x][licznik_y]=lista->odcienie;
+        }
+    }
+        lista->czy_zmieniony=TAK;
+    }
+
+
 }
 void obrot_90P(element *lista)
 {
@@ -159,8 +199,6 @@ void obrot_90L(element *lista)
         free(t[licznik]);
     free(t);
 }
-
-
 void odbij_poziomo( element *lista)
 {
     int licznik_y=0, licznik_x=0;
