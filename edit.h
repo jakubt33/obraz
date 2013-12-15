@@ -11,6 +11,7 @@ void kontury( element *lista);
 void obrot_90P(element *lista);
 void obrot_90L(element *lista);
 void kontrast (element *lista);
+void przytnij(element *lista);
 
 void edycja(element *lista, int komenda)
 {
@@ -84,6 +85,16 @@ void edycja(element *lista, int komenda)
                         obrot_90L( lista );
                         break;
                     }
+                    case 43:
+                    {
+                        //obrot_180( lista );
+                        break;
+                    }
+                    case 44:
+                    {
+                        przytnij( lista );
+                        break;
+                    }
                     default:
                     {
                         printf("brak takiej opcji\n");
@@ -99,6 +110,75 @@ void edycja(element *lista, int komenda)
             printf("nie znaleziono obrazka o takiej nazwie\n");
     }
 }
+void przytnij(element *lista)
+{
+    printf("obrazek ma wymiary %d na %d\n", lista->wymx, lista->wymy);
+    printf("podaj o ile piseli przyciąć: \n");
+    int od_lewej=0, od_prawej=0 ,od_gory=0 ,od_dolu=0, licznik_x=0, licznik_y=0;
+
+    printf("o strony lewej: \n");
+    if ( scanf("%d", &od_lewej) != 1 )
+    {
+        error();
+    }
+    else
+    {
+        printf("o strony prawej: \n");
+        if ( scanf("%d", &od_prawej) != 1 )
+        {
+            error();
+        }
+        else
+        {
+            printf("od góry: \n");
+            if ( scanf("%d", &od_gory) != 1 )
+            {
+                error();
+            }
+            else
+            {
+                printf("od dolu: \n");
+                if ( scanf("%d", &od_dolu) != 1 )
+                {
+                    error();
+                }
+                else
+                {
+                    int n_wymx=0, n_wymy=0, licznik=0;
+                    if( (n_wymx=lista->wymx-(od_lewej+od_prawej)) > 0 && od_lewej >=0 && od_prawej >= 0)
+                    {
+                        if( (n_wymy=lista->wymy-(od_gory+od_dolu)) > 0 && od_gory >= 0 && od_dolu >= 0)
+                        {
+
+                            for(licznik_x=od_lewej; licznik_x<lista->wymx; licznik_x++)
+                            {
+                                for(licznik_y=od_gory; licznik_y<lista->wymy; licznik_y++)
+                                {
+                                    lista->obraz[licznik_x-od_lewej][licznik_y-od_gory] = lista->obraz[licznik_x][licznik_y];
+                                }
+                            }
+
+                            lista->obraz = (int**)realloc(lista->obraz, n_wymx * sizeof(int*));
+                            for(licznik = 0; licznik < n_wymx; licznik++)
+                                lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], n_wymy * sizeof(int));
+
+                            lista->wymx=n_wymx;
+                            lista->wymy=n_wymy;
+
+                            lista->czy_zmieniony = TAK;
+                        }
+                        else printf("podane wymiary są błędne\n");
+                    }
+                    else printf ("podane wymiary są błędne\n");
+                }
+            }
+        }
+    }
+}
+
+
+
+
 void kontrast(element *lista)
 {
     unsigned long int sumator=0;
@@ -117,17 +197,17 @@ void kontrast(element *lista)
     int moc = pobierz_moc(lista);
     if(moc != STOP )
     {
-    printf("moc to %d\n", moc);
-    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-    {
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        printf("moc to %d\n", moc);
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
         {
-            float wsp = (moc-srednia)*(srednia-lista->obraz[licznik_x][licznik_y])/(srednia);
-            lista->obraz[licznik_x][licznik_y] -=wsp;
-            if(lista->obraz[licznik_x][licznik_y]<0) lista->obraz[licznik_x][licznik_y]=0;
-            if(lista->obraz[licznik_x][licznik_y]>lista->odcienie) lista->obraz[licznik_x][licznik_y]=lista->odcienie;
+            for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+            {
+                float wsp = (moc-srednia)*(srednia-lista->obraz[licznik_x][licznik_y])/(srednia);
+                lista->obraz[licznik_x][licznik_y] -=wsp;
+                if(lista->obraz[licznik_x][licznik_y]<0) lista->obraz[licznik_x][licznik_y]=0;
+                if(lista->obraz[licznik_x][licznik_y]>lista->odcienie) lista->obraz[licznik_x][licznik_y]=lista->odcienie;
+            }
         }
-    }
         lista->czy_zmieniony=TAK;
     }
 
@@ -156,9 +236,9 @@ void obrot_90P(element *lista)
     for(licznik = 0; licznik < lista->wymx; licznik++)
         lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
 
-   for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
 
     lista->czy_zmieniony = TAK;
 
@@ -189,9 +269,9 @@ void obrot_90L(element *lista)
     for(licznik = 0; licznik < lista->wymx; licznik++)
         lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
 
-   for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
 
     lista->czy_zmieniony = TAK;
 

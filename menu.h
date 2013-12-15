@@ -37,8 +37,9 @@ void menu(element *lista)
                "38 - Rozmycie Gaussa\n" //dopisac
                "41 - Obrót w prawo o 90 stopni\n"
                "42 - Obrót w lewo o 90 stopni\n"
-               "43 - Obrót o 180\n"
-               "44 - Zmniejsz obraz\n"
+               "43 - Obrót o 180\n" //dopisac
+               "44 - Przytnij obraz\n"
+               "45 - Rozciągnij"
                "5 - Zapisz zmienione obrazy\n"
                "6 - Wyjdź\n");
         int komenda = 0 ;
