@@ -39,7 +39,7 @@ void menu(element *lista)
                "42 - Obrót w lewo o 90 stopni\n"
                "43 - Obrót o 180\n" //dopisac
                "44 - Przytnij obraz\n"
-               "45 - Rozciągnij"
+               "45 - Rozciągnij\n"
                "5 - Zapisz zmienione obrazy\n"
                "6 - Wyjdź\n");
         int komenda = 0 ;

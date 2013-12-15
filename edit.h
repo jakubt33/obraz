@@ -12,6 +12,8 @@ void obrot_90P(element *lista);
 void obrot_90L(element *lista);
 void kontrast (element *lista);
 void przytnij(element *lista);
+void rozciagnij(element *lista);
+
 
 void edycja(element *lista, int komenda)
 {
@@ -95,6 +97,11 @@ void edycja(element *lista, int komenda)
                         przytnij( lista );
                         break;
                     }
+                    case 45:
+                    {
+                        rozciagnij( lista ); //naprawic
+                        break;
+                    }
                     default:
                     {
                         printf("brak takiej opcji\n");
@@ -175,9 +182,64 @@ void przytnij(element *lista)
         }
     }
 }
+void rozciagnij(element *lista)
+{
+    printf("ile razy poszerzyć obraz w poziomie:  ");
+    float wspx=0, wspy=0;
+    if ( scanf("%f", &wspx) != 1 )
+    {
+        error();
+    }
+    else
+    {
+        printf("ile razy poszerzyć obraz w pionie:  ");
+        if ( scanf("%f", &wspy) != 1 )
+        {
+            error();
+        }
+        else
+        {
+            int licznik=0, licznik_x=0, licznik_y=0, n_wymx=0, n_wymy=0;
+            n_wymx = lista->wymx * wspx;
+            n_wymy = lista->wymy * wspy;
 
+            int **t;
+            t = (int**)malloc( n_wymx * sizeof(int*));
+            for(licznik = 0; licznik < n_wymx; licznik++)
+                t[licznik] = (int*)malloc( n_wymy * sizeof(int));
 
+            for(licznik_x=0; licznik_x < n_wymx; licznik_x++)
+            {
+                for(licznik_y=0; licznik_y<n_wymy; licznik_y++)
+                {
+                    int x = licznik_x/wspx;
+                    int y = licznik_y/wspy;
+                    t[licznik_x][licznik_y] = lista->obraz[x][y];
+                }
+            }
+            lista->wymx = n_wymx;
+            lista->wymy = n_wymy;
 
+            lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
+            for(licznik = 0; licznik < lista->wymx; licznik++)
+                lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
+
+            for(licznik_x=0; licznik_x < lista->wymx; licznik_x++)
+            {
+                for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+                {
+                    lista->obraz[licznik_x][licznik_y] = t[licznik_x][licznik_y];
+                }
+            }
+            lista->czy_zmieniony = TAK;
+
+            for(licznik = 0; licznik < lista->wymx; licznik++)
+                free(t[licznik]);
+            free(t);
+        }
+
+    }
+}
 
 void kontrast(element *lista)
 {
