@@ -19,7 +19,7 @@ void zapisz2(element * lista, int polecenie);
 
 void menu(element *lista)
 {
-    int komendy[14] = {31,32,33,34,35,36,37,38,39,41,42,43,44,45};
+    int komendy[] = {31,32,33,34,35,36,37,38,39,41,42,43,44,45}; //14
     int czy_konczyc = NIE;
     while( czy_konczyc == NIE )
     {
@@ -35,7 +35,7 @@ void menu(element *lista)
                "35 - Black&White\n"
                "36 - Znajdz kontury\n"
                "37 - Zmień kontrast\n"
-               "38 - Rozmycie\n" //dopisac warunki brzegowe
+               "38 - Rozmycie\n"
                "39 - Negatyw\n" //dorobic
                "-------------------\n"
                "41 - Obrót w prawo o 90 stopni\n"
@@ -59,9 +59,6 @@ void menu(element *lista)
             {
 
                 lista = wczytajobraz(lista);
-                //free(temp); wlaczneie tego powoduje nie dopisywanie kolejnych obrazow do listy, tyko lacza sie komentarze
-                //kopie = zapisz_bufor(kopie, temp);
-                //zwolnij_tablice(temp);
                 break;
             }
             case 2:

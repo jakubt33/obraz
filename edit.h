@@ -132,7 +132,7 @@ void edycja(element *lista, int komenda)
             while(lista!=NULL);
         }
         if ( znaleziony == NIE)
-            printf("nie znaleziono obrazka o takiej nazwie\n");
+            printf("nie znaleziono takiego obrazka w bazie\n");
     }
 }
 void sukces()

@@ -11,3 +11,13 @@ int main()
 
     return 0;
 }
+//negatyw
+//laplace
+//sprawdzenie zabezpeiczen
+//instrukcja
+//komentarze
+//czyszczenie pamieci!!!
+//podpis
+//ustawienie voidow w jakiejs kolejnosci
+//obrot o 180st
+//sprawdzic co z P1

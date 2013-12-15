@@ -249,16 +249,10 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
 
     fseek(pFile, -1, SEEK_CUR);
 
-    // printf("test = %c\n", test[0]);
-
     if( test == '#' )
     {
         odczyt_komentarza(pFile, temp);
         sprawdz_komentarz(pFile, temp);
-    }
-    else if (test == '\n')
-    {
-        printf("test wykryl 'n'\n");
     }
     else fseek(pFile, -1, SEEK_CUR);
 
