@@ -16,6 +16,7 @@ void wyswietl(element *);
 element * usun(element *);
 void zapisz1(element *lista);
 void zapisz2(element * lista, int polecenie);
+void podpis();
 
 
 void menu(element *lista)
@@ -41,7 +42,7 @@ void menu(element *lista)
                "-------------------\n"
                "41 - Obrót w prawo o 90 stopni\n"
                "42 - Obrót w lewo o 90 stopni\n"
-               "43 - Obrót o 180\n" //dopisac
+               "43 - Obrót o 180\n"
                "44 - Przytnij obraz\n"
                "45 - Rozciągnij\n"
                "-------------------\n"
@@ -220,6 +221,12 @@ element * usun(element *first)
     free(first);
     return NULL;
 }
-
+void podpis()
+{
+    printf("\n--------------------\n"
+           "JAKUB TRZYNA 205687\n"
+           "programowanie w C\n"
+           "--------------------\n");
+}
 #endif // MENU_H_INCLUDED
 

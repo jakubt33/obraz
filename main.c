@@ -8,15 +8,11 @@ int main()
     menu(lista);
 
     lista = usun(lista);
-
+    podpis();
     return 0;
 }
 //negatyw
 //laplace
-//sprawdzenie zabezpeiczen
 //instrukcja
 //czyszczenie pamieci!!!
-//podpis
 //ustawienie voidow w jakiejs kolejnosci
-//obrot o 180st
-//sprawdzic co z P1

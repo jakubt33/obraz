@@ -149,7 +149,7 @@ int pobierz_obraz(FILE *pFile, element *temp)
 
     case COLOR:
 
-        printf("program nie umozliwia jeszcze obsługi kolorowych obrazów\n"); //mozna bedzei dodac funcke jak starczy czasu
+        printf("program nie umozliwia jeszcze obsługi kolorowych obrazów\n");
         return STOP;
         break;
 

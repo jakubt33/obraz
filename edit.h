@@ -10,6 +10,7 @@ void black_white( element *lista);
 void kontury( element *lista);
 void obrot_90P(element *lista);
 void obrot_90L(element *lista);
+void obrot_180(element *lista);
 void kontrast (element *lista);
 void przytnij(element *lista);
 void rozciagnij(element *lista);
@@ -106,7 +107,7 @@ void edycja(element *lista, int komenda)
                     }
                     case 43:
                     {
-                        //obrot_180( lista );
+                        obrot_180( lista );
                         break;
                     }
                     case 44:
@@ -152,6 +153,7 @@ void rozmycie (element *lista)
     }
     else if (moc>0 && lista->wymx>2*moc && lista->wymy>2*moc)
     {
+
         temp = (int**)malloc(lista->wymx * sizeof(int*));
         for(licznik = 0; licznik < lista->wymx; licznik++)
             temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
@@ -427,7 +429,7 @@ void obrot_90L(element *lista)
     int licznik_y=0,licznik_x=0;
     for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            t[licznik_x][licznik_y] = lista->obraz[lista->wymy-1-licznik_y][lista->wymx-1-licznik_x];
+            t[licznik_x][licznik_y] = lista->obraz[lista->wymy-1-licznik_y][licznik_x];
 
     lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
     for(licznik = 0; licznik < lista->wymx; licznik++)
@@ -442,6 +444,11 @@ void obrot_90L(element *lista)
     for(licznik = 0; licznik < lista->wymx; licznik++)
         free(t[licznik]);
     free(t);
+}
+void obrot_180(element *lista)
+{
+    obrot_90L(lista);
+    obrot_90L(lista);
 }
 void odbij_poziomo( element *lista)
 {
