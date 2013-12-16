@@ -15,6 +15,7 @@ void przytnij(element *lista);
 void rozciagnij(element *lista);
 void rozmycie (element *lista);
 void sukces();
+int pobierz_moc(element *lista);
 
 
 void edycja(element *lista, int komenda)
@@ -486,7 +487,8 @@ int pobierz_moc(element *lista)
         printf("moc poza zakresem\n");
         return STOP;
     }
-    else return moc;
+    return moc;
+
 }
 void pociemnij( element *lista)
 {
@@ -494,7 +496,6 @@ void pociemnij( element *lista)
     if(moc != STOP)
     {
         int licznik_y=0, licznik_x=0;
-        int temp=0;
 
         for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         {
@@ -515,7 +516,6 @@ void rozjasnij( element *lista)
     if(moc != STOP)
     {
         int licznik_y=0, licznik_x=0;
-        int temp=0;
 
         for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         {
@@ -536,7 +536,6 @@ void black_white( element *lista)
     if(moc != STOP)
     {
         int licznik_y=0, licznik_x=0;
-        int temp=0;
 
         for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         {
@@ -552,11 +551,11 @@ void black_white( element *lista)
 }
 void kontury( element *lista)
 {
+    printf("standardowa moc to ok %d\n", lista->odcienie/2);
     int moc=pobierz_moc(lista);
     if(moc != STOP)
     {
         int licznik_y=0, licznik_x=0;
-        int temp=0;
 
         for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         {

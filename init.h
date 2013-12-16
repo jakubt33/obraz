@@ -1,7 +1,7 @@
 #ifndef INIT_H_INCLUDED
 #define INIT_H_INCLUDED
 
-#define MAXCOMMENT 50 //tu jest hohlik
+#define MAXCOMMENT 1000
 #define MAXNAZWA 20
 
 void error();
@@ -17,7 +17,7 @@ typedef struct element
     int wymy;
     char comment[MAXCOMMENT];
     int **obraz;
-    char nazwa[20];
+    char nazwa[MAXNAZWA];
 } element;
 
 

@@ -18,12 +18,13 @@ int sprawdz_typ(FILE *pFile, element *temp);
 int sprawdz_wymiary(FILE *pFile, element *temp);
 int sprawdz_odcienie(FILE *pFile, element *temp);
 int pobierz_obraz(FILE *pFile, element *temp);
-void pobierz_tablice(FILE *pFile, element *temp);
+int pobierz_tablice(FILE *pFile, element *temp);
 void mallocuj_tablice(element *temp);
 void zwolnij_tablice(element *temp);
 void nazwa_obrazka(element *temp, int *dzialaj);
 void numeruj(element *first);
 element * zapisz_bufor(element *glowny, element *temp);
+void odczyt_komentarza(FILE *pFile,element * temp);
 
 void nazwa_obrazka(element *temp, int *dzialaj)
 {
@@ -31,7 +32,7 @@ void nazwa_obrazka(element *temp, int *dzialaj)
     if ( scanf("%19s", temp->nazwa) != 1 )
     {
         error();
-        dzialaj = STOP;
+        *dzialaj = STOP;
     }
 }
 element * wczytajobraz(element *lista)
@@ -39,7 +40,6 @@ element * wczytajobraz(element *lista)
 
     element *temp;
     temp=(element*)malloc(sizeof(element));
-
     int dzialaj = WORK;
     nazwa_obrazka(temp, &dzialaj);
     FILE * pFile;
@@ -49,6 +49,8 @@ element * wczytajobraz(element *lista)
     {
         dzialaj = STOP;
         perror("blad otwarcia pliku");
+        free(temp);
+        return lista;
     }
     else
     {
@@ -72,7 +74,6 @@ element * wczytajobraz(element *lista)
             dzialaj=STOP; //flaga error
         fclose(pFile);
     }
-    //free(temp);
     if( dzialaj == WORK )
     {
         temp->next = NULL;
@@ -80,8 +81,11 @@ element * wczytajobraz(element *lista)
         return lista;
     }
     else
+    {
         printf("program napotkał błąd przy odczycie danych obrazu\n");
+        free(temp);
     return lista;
+    }
 }
 element * zapisz_bufor(element *glowny, element *temp)
 {
@@ -102,7 +106,7 @@ void numeruj(element *first)
         do
         {
             licznik++;
-            first->numer=first->numer=licznik;
+            first->numer=licznik;
             first=first->next; //modyfikuijmy tylko kopie wskaznika!
         }
         while(first!=NULL);
@@ -121,8 +125,10 @@ int pobierz_obraz(FILE *pFile, element *temp)
     {
     case B_AND_W:
 
-        pobierz_tablice(pFile, temp);
-        return WORK;
+        if ( pobierz_tablice(pFile, temp) == WORK )
+            return WORK;
+        else
+            return STOP;
         break;
 
     case GR_SCALE:
@@ -131,8 +137,9 @@ int pobierz_obraz(FILE *pFile, element *temp)
         if( sprawdz_odcienie(pFile, temp) )
         {
             sprawdz_komentarz(pFile, temp);
-            pobierz_tablice(pFile, temp);
-            return WORK;
+            if( pobierz_tablice(pFile, temp) == WORK )
+                return WORK;
+            else return STOP;
         }
         else
         {
@@ -142,7 +149,7 @@ int pobierz_obraz(FILE *pFile, element *temp)
 
     case COLOR:
 
-        printf("program nie umozliwia jeszcze obsługi kolorowych obrazów\n"); //mozna bedzei dodac funcke jak starczy czasu\
+        printf("program nie umozliwia jeszcze obsługi kolorowych obrazów\n"); //mozna bedzei dodac funcke jak starczy czasu
         return STOP;
         break;
 
@@ -165,7 +172,7 @@ int sprawdz_odcienie(FILE *pFile, element *temp)
     if ( fscanf( pFile, "%d", &temp->odcienie) )
     {
         char endline=0;
-        while ( endline=fgetc(pFile) != '\n');
+        while ( (endline=fgetc(pFile)) != '\n');
         return WORK;
     }
     return STOP;
@@ -178,26 +185,22 @@ void mallocuj_tablice(element *temp)
     for(licznik = 0; licznik < temp->wymx; licznik++)
         temp->obraz[licznik] = (int*)malloc(temp->wymy * sizeof(int));
 }
-void pobierz_tablice(FILE *pFile, element *temp)
+int pobierz_tablice(FILE *pFile, element *temp)
 {
     mallocuj_tablice(temp);
     int licznik_y=0, licznik_x=0;
+    int counter=0;
     for(licznik_y=0; licznik_y<temp->wymy; licznik_y++)
     {
         for(licznik_x=0; licznik_x<temp->wymx; licznik_x++)
-            fscanf(pFile, "%d", &temp->obraz[licznik_x][licznik_y] );
+            if(fscanf(pFile, "%d", &temp->obraz[licznik_x][licznik_y] ))
+            {
+                counter++;
+            }
     }
-
-    /*
-//po odczycie od razu wyswietla
-    for(licznik_y=0; licznik_y<temp->wymiary[WYM_Y]; licznik_y++)
-    {
-        printf("\n");
-        for(licznik_x=0; licznik_x<temp->wymiary[WYM_X]; licznik_x++)
-           printf("%d ", temp->obraz[licznik_x][licznik_y]);
-    }
-    printf("\n");
-    */
+    if (counter == temp->wymx*temp->wymy)
+        return WORK;
+    return STOP;
 }
 int sprawdz_wymiary(FILE *pFile, element *temp)
 {
@@ -216,7 +219,7 @@ int sprawdz_wymiary(FILE *pFile, element *temp)
         if (fscanf(pFile, "%d", &temp->wymy))
         {
             char endline=0;
-            while ( endline=fgetc(pFile) != '\n');
+            while ( (endline=fgetc(pFile)) != '\n');
             return WORK;
         }
         else return STOP;
@@ -254,33 +257,33 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
         odczyt_komentarza(pFile, temp);
         sprawdz_komentarz(pFile, temp);
     }
-    else fseek(pFile, -1, SEEK_CUR);
+    else if (test != '\n')
+        fseek(pFile, -1, SEEK_CUR);
+    else ;
 
 }
-int odczyt_komentarza(FILE *pFile, element *temp)
+void odczyt_komentarza(FILE *pFile, element *temp)
 {
     int licznik=0;
-    char tempcomment[MAXCOMMENT]={'\0'};
+    char tempcomment[MAXCOMMENT];
     char znak=0;
     do
     {
         znak=fgetc(pFile);
 
-        if ( licznik < MAXCOMMENT-1)
-            tempcomment[licznik] = znak;
+        tempcomment[licznik] = znak;
 
         licznik++;
 
     }
     while ( znak != '\n');
-    if ( licznik < MAXCOMMENT-1)
-        tempcomment[licznik] = '\0';
-    else
-        tempcomment[MAXCOMMENT-1] = '\0';
 
-    strcpy(temp->comment, tempcomment/*, sizeof(temp->comment)-strlen(tempcomment)-strlen(temp->comment)-1*/);
-    //temp->comment[strlen(temp->comment)] = '\0';
-    //printf("\ncomment to :\n%s", temp->comment);
+    tempcomment[licznik] = '\0';
+
+    if(strlen(temp->comment)+strlen(tempcomment) < MAXCOMMENT-1)
+        strcat(temp->comment, tempcomment);
+//  printf("calkowity koment to %s", temp->comment);
+// printf("dlugosc to %ld\n", strlen(temp->comment));
 }
 element *push(element *first, element *newone)
 {

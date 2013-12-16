@@ -15,7 +15,6 @@ int main()
 //laplace
 //sprawdzenie zabezpeiczen
 //instrukcja
-//komentarze
 //czyszczenie pamieci!!!
 //podpis
 //ustawienie voidow w jakiejs kolejnosci

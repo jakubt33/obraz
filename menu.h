@@ -5,6 +5,7 @@
 #define TAK 1
 
 #include <stdlib.h>
+#include <string.h>
 #include "init.h"
 #include "odczyt.h"
 #include "edit.h"
@@ -194,17 +195,18 @@ void wyswietl(element *first)
     {
         do
         {
-            printf("\n%d. nazwa obrazu to %s", first->numer, first->nazwa);
-            if(first->czy_zmieniony == TAK) printf("\nobrazek jest zmienieniony\n");
-            else printf("\nobrazek jest niezmienieniony\n");
-            printf("typ obrazu to %s\t", first->type);
-            printf("wymiary to %d na %d\t", first->wymx, first->wymy);
-            printf("ilosc odcieni to %d\n", first->odcienie);
+            printf("\n%d. nazwa obrazu: %s\t", first->numer, first->nazwa);
+            printf("typ obrazu to %s\n", first->type);
+            if(first->czy_zmieniony == TAK) printf("obrazek jest zmienieniony\n");
+            else printf("obrazek jest niezmienieniony\n");
             printf("komentarz to:\n%s\n", first->comment);
 
             first=first->next;
         }
         while(first!=NULL);
+        printf("\n[enter] aby porwóić do widoku menu\n");
+        getchar();
+        getchar();
     }
 }
 element * usun(element *first)
