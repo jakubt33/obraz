@@ -9,22 +9,22 @@
 	<math.h>
 	<time.h>
 
-1387194768 source:/home/kuba/github/obraz/main.c
+1387227538 source:/home/kuba/github/obraz/main.c
 	<stdio.h>
 	"menu.h"
 
 1386893952 /home/kuba/github/obraz/naglowki.h
 
-1387191776 /home/kuba/github/obraz/init.h
+1387228684 /home/kuba/github/obraz/init.h
 
-1387192569 /home/kuba/github/obraz/odczyt.h
+1387227655 /home/kuba/github/obraz/odczyt.h
 
-1387195095 /home/kuba/github/obraz/menu.h
+1387227655 /home/kuba/github/obraz/menu.h
 	<stdlib.h>
 	<string.h>
 	"init.h"
 	"odczyt.h"
 	"edit.h"
 
-1387195518 /home/kuba/github/obraz/edit.h
+1387227400 /home/kuba/github/obraz/edit.h
 

@@ -1,25 +1,44 @@
 #ifndef EDIT_H_INCLUDED
 #define EDIT_H_INCLUDED
 
-void edycja(element *lista, int komenda);
-void odbij_poziomo( element *lista);
-void odbij_pionowo( element *lista);
-void pociemnij( element *lista);
-void rozjasnij( element *lista);
+
 void black_white( element *lista);
+void edycja(element *lista, int komenda);
+void kontrast (element *lista);
 void kontury( element *lista);
+void negatyw (element *lista);
 void obrot_90P(element *lista);
 void obrot_90L(element *lista);
 void obrot_180(element *lista);
-void kontrast (element *lista);
+void odbij_pionowo( element *lista);
+void odbij_poziomo( element *lista);
+int pobierz_moc(element *lista);
+void pociemnij( element *lista);
 void przytnij(element *lista);
 void rozciagnij(element *lista);
+void rozjasnij( element *lista);
 void rozmycie (element *lista);
 void sukces();
-int pobierz_moc(element *lista);
-void negatyw (element *lista);
 
+void black_white( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
 
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
+                    lista->obraz[licznik_x][licznik_y] = 0 ;
+                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+            }
+        }
+        lista->czy_zmieniony = TAK;
+    }
+}
 void edycja(element *lista, int komenda)
 {
     int znaleziony = NIE;
@@ -144,88 +163,245 @@ void edycja(element *lista, int komenda)
             printf("nie znaleziono takiego obrazka w bazie\n");
     }
 }
-void sukces()
+void kontrast(element *lista)
 {
-    printf("edycja zakończona sukcesem!\n");
-}
-void rozmycie (element *lista)
-{
-    int licznik_x=0, licznik_y=0, licznik=0, **temp;
+    unsigned long int sumator=0; //zrobic zabezpieczenie przed max rozmiarem
+    int licznik_x=0, licznik_y=0;
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            sumator += lista->obraz[licznik_x][licznik_y];
+        }
+    }
+    int srednia=((sumator)/((lista->wymx)*(lista->wymy)));
+    printf("moc %d - neutralna, większa=większy kontrast\n", srednia);
 
-    printf("podaj moc filtra, standardowo 1-5\n");
+    int moc = pobierz_moc(lista);
+    if(moc != STOP )
+    {
+        printf("wybrana moc to %d\n", moc);
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+        {
+            for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+            {
+                float wsp = (moc-srednia)*(srednia-lista->obraz[licznik_x][licznik_y])/(srednia);
+                lista->obraz[licznik_x][licznik_y] -=wsp;
+                if(lista->obraz[licznik_x][licznik_y]<0) lista->obraz[licznik_x][licznik_y]=0;
+                if(lista->obraz[licznik_x][licznik_y]>lista->odcienie) lista->obraz[licznik_x][licznik_y]=lista->odcienie;
+            }
+        }
+        lista->czy_zmieniony=TAK;
+    }
+}
+void kontury( element *lista)
+{
+    printf("standardowa moc to ok %d\n", lista->odcienie/2);
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
+
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
+                    lista->obraz[licznik_x][licznik_y] = 0 ;
+                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+            }
+        }
+
+        int licznik=0;
+        int **t;
+        t = (int**)malloc(lista->wymx * sizeof(int*));
+
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+        int test=0;
+        for(licznik_y=1; licznik_y<lista->wymy-1; licznik_y++)
+        {
+            for(licznik_x=1; licznik_x<lista->wymx-1; licznik_x++)
+            {
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x+1][licznik_y] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x-1][licznik_y] )
+                    test++;
+                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
+                    test++;
+
+                if(test > 0)
+                    t[licznik_x][licznik_y] = 0 ;
+
+                else
+                    t[licznik_x][licznik_y] = lista->odcienie;
+                test=0;
+            }
+        }
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        {
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            {
+                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+            }
+        }
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            free(t[licznik]);
+        free(t);
+
+        lista->czy_zmieniony = TAK;
+    }
+}
+void negatyw (element *lista)
+{
+    int licznik_y=0, licznik_x=0;
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    {
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+        {
+            lista->obraz[licznik_x][licznik_y] = lista->odcienie -lista->obraz[licznik_x][licznik_y];
+        }
+    }
+    lista->czy_zmieniony = TAK;
+}
+void obrot_90P(element *lista)
+{
+    int licznik=0;
+    int temp_x=lista->wymx;
+    lista->wymx=lista->wymy;
+    lista->wymy=temp_x;
+
+    int **t;
+    t = (int**)malloc(lista->wymx * sizeof(int*));
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+
+    int licznik_y=0,licznik_x=0;
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            t[licznik_x][licznik_y] = lista->obraz[licznik_y][lista->wymx-1-licznik_x];
+
+    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+
+    lista->czy_zmieniony = TAK;
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        free(t[licznik]);
+    free(t);
+}
+void obrot_90L(element *lista)
+{
+    int licznik=0;
+    int temp_x=lista->wymx;
+    lista->wymx=lista->wymy;
+    lista->wymy=temp_x;
+
+    int **t;
+    t = (int**)malloc(lista->wymx * sizeof(int*));
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+
+    int licznik_y=0,licznik_x=0;
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            t[licznik_x][licznik_y] = lista->obraz[lista->wymy-1-licznik_y][licznik_x];
+
+    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
+
+    lista->czy_zmieniony = TAK;
+
+    for(licznik = 0; licznik < lista->wymx; licznik++)
+        free(t[licznik]);
+    free(t);
+}
+void obrot_180(element *lista)
+{
+    obrot_90L(lista);
+    obrot_90L(lista);
+}
+void odbij_pionowo( element *lista)
+{
+    int licznik_y=0, licznik_x=0;
+    int temp=0;
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    {
+        for(licznik_x=0; licznik_x<lista->wymx/2; licznik_x++)
+        {
+            temp = lista->obraz[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[lista->wymx-1-licznik_x][licznik_y];
+            lista->obraz[lista->wymx-1-licznik_x][licznik_y] = temp;
+        }
+    }
+    lista->czy_zmieniony = TAK;
+}
+void odbij_poziomo( element *lista)
+{
+    int licznik_y=0, licznik_x=0;
+    int temp=0;
+    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+    {
+        for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
+        {
+            temp= lista->obraz[licznik_x][licznik_y];
+            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-1-licznik_y];
+            lista->obraz[licznik_x][lista->wymy-1-licznik_y] = temp;
+        }
+    }
+    lista->czy_zmieniony = TAK;
+}
+int pobierz_moc(element *lista)
+{
+    printf("podaj jak moc filtra w sklali 1-%d: ", lista->odcienie);
     int moc=0;
     if ( scanf("%d", &moc) != 1 )
     {
         error();
     }
-    else if (moc>0 && lista->wymx>2*moc && lista->wymy>2*moc)
+    else if (moc>lista->odcienie)
     {
+        printf("moc poza zakresem\n");
+        return STOP;
+    }
+    return moc;
 
-        temp = (int**)malloc(lista->wymx * sizeof(int*));
-        for(licznik = 0; licznik < lista->wymx; licznik++)
-            temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+}
+void pociemnij( element *lista)
+{
+    int moc=pobierz_moc(lista);
+    if(moc != STOP)
+    {
+        int licznik_y=0, licznik_x=0;
 
-        int sumator=0, i=0, j=0;
-        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
+        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
         {
-            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
             {
-                sumator=0, i=0, j=0;
-
-                for(i=-moc; i<=moc; i++)
-                    for(j=-moc; j<=moc; j++)
-                        sumator+= lista->obraz[licznik_x+i][licznik_y+j] ;
-
-                temp[licznik_x][licznik_y] = sumator/(((2*moc) + 1)*((2*moc)+1));
+                if (lista->obraz[licznik_x][licznik_y] >= moc )
+                    lista->obraz[licznik_x][licznik_y] -= moc ;
+                else lista->obraz[licznik_x][licznik_y] = 0;
             }
         }
-        moc--;
-        while(moc>0)
-        {
-            int k=0;
-            for(k=0; k<2; k++)//musi sie wykonać 2 razy, dla storny lewej i prawej
-            {
-                int ty=moc;
-                for(licznik_x=ty; licznik_x<lista->wymx-ty; licznik_x++)
-                {
-                    sumator=0, i=0, j=0;
-                    for(i=-moc; i<=moc; i++)
-                        for(j=-moc; j<=moc; j++)
-                            sumator+= lista->obraz[licznik_x+i][ty+j] ;
-
-                    temp[licznik_x][moc] = sumator/((2*moc + 1)*(2*moc+1));
-                }
-                ty = lista->wymy-moc;
-            }
-            for(k=0; k<2; k++) //musi sie wykonać 2 razy, dla storny lewej i prawej
-            {
-                int tx=moc;
-                for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
-                {
-                    sumator=0, i=0, j=0;
-
-                    for(i=-moc; i<=moc; i++)
-                        for(j=-moc; j<=moc; j++)
-                            sumator+= lista->obraz[tx+i][licznik_y+j] ;
-
-                    temp[moc][licznik_y] = sumator/((2*moc + 1)*(2*moc+1));
-                }
-                tx = lista->wymx-moc;
-            }
-            moc--;
-        }
-
-        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
-        {
-            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
-            {
-                lista->obraz[licznik_x][licznik_y] = temp[licznik_x][licznik_y];
-            }
-        }
-
-        for(licznik = 0; licznik < lista->wymx; licznik++)
-            free(temp[licznik]);
-        free(temp);
 
         lista->czy_zmieniony = TAK;
     }
@@ -355,175 +531,6 @@ void rozciagnij(element *lista)
 
     }
 }
-void kontrast(element *lista)
-{
-    unsigned long int sumator=0; //zrobic zabezpieczenie przed max rozmiarem
-    int licznik_x=0, licznik_y=0;
-    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-    {
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        {
-            sumator += lista->obraz[licznik_x][licznik_y];
-        }
-    }
-    int srednia=((sumator)/((lista->wymx)*(lista->wymy)));
-    printf("moc %d - neutralna, większa=większy kontrast\n", srednia);
-
-    int moc = pobierz_moc(lista);
-    if(moc != STOP )
-    {
-        printf("wybrana moc to %d\n", moc);
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-        {
-            for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-            {
-                float wsp = (moc-srednia)*(srednia-lista->obraz[licznik_x][licznik_y])/(srednia);
-                lista->obraz[licznik_x][licznik_y] -=wsp;
-                if(lista->obraz[licznik_x][licznik_y]<0) lista->obraz[licznik_x][licznik_y]=0;
-                if(lista->obraz[licznik_x][licznik_y]>lista->odcienie) lista->obraz[licznik_x][licznik_y]=lista->odcienie;
-            }
-        }
-        lista->czy_zmieniony=TAK;
-    }
-}
-void obrot_90P(element *lista)
-{
-    int licznik=0;
-    int temp_x=lista->wymx;
-    lista->wymx=lista->wymy;
-    lista->wymy=temp_x;
-
-    int **t;
-    t = (int**)malloc(lista->wymx * sizeof(int*));
-
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
-
-
-    int licznik_y=0,licznik_x=0;
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            t[licznik_x][licznik_y] = lista->obraz[licznik_y][lista->wymx-1-licznik_x];
-
-    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
-
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
-
-    lista->czy_zmieniony = TAK;
-
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        free(t[licznik]);
-    free(t);
-}
-void obrot_90L(element *lista)
-{
-    int licznik=0;
-    int temp_x=lista->wymx;
-    lista->wymx=lista->wymy;
-    lista->wymy=temp_x;
-
-    int **t;
-    t = (int**)malloc(lista->wymx * sizeof(int*));
-
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
-
-
-    int licznik_y=0,licznik_x=0;
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            t[licznik_x][licznik_y] = lista->obraz[lista->wymy-1-licznik_y][licznik_x];
-
-    lista->obraz = (int**)realloc(lista->obraz, lista->wymx * sizeof(int*));
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        lista->obraz[licznik] = (int*)realloc(lista->obraz[licznik], lista->wymy * sizeof(int));
-
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
-
-    lista->czy_zmieniony = TAK;
-
-    for(licznik = 0; licznik < lista->wymx; licznik++)
-        free(t[licznik]);
-    free(t);
-}
-void obrot_180(element *lista)
-{
-    obrot_90L(lista);
-    obrot_90L(lista);
-}
-void odbij_poziomo( element *lista)
-{
-    int licznik_y=0, licznik_x=0;
-    int temp=0;
-    for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-    {
-        for(licznik_y=0; licznik_y<lista->wymy/2; licznik_y++)
-        {
-            temp= lista->obraz[licznik_x][licznik_y];
-            lista->obraz[licznik_x][licznik_y] = lista->obraz[licznik_x][lista->wymy-1-licznik_y];
-            lista->obraz[licznik_x][lista->wymy-1-licznik_y] = temp;
-        }
-    }
-    lista->czy_zmieniony = TAK;
-}
-void odbij_pionowo( element *lista)
-{
-    int licznik_y=0, licznik_x=0;
-    int temp=0;
-
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-    {
-        for(licznik_x=0; licznik_x<lista->wymx/2; licznik_x++)
-        {
-            temp = lista->obraz[licznik_x][licznik_y];
-            lista->obraz[licznik_x][licznik_y] = lista->obraz[lista->wymx-1-licznik_x][licznik_y];
-            lista->obraz[lista->wymx-1-licznik_x][licznik_y] = temp;
-        }
-    }
-    lista->czy_zmieniony = TAK;
-}
-int pobierz_moc(element *lista)
-{
-    printf("podaj jak moc filtra w sklali 1-%d: ", lista->odcienie);
-    int moc=0;
-    if ( scanf("%d", &moc) != 1 )
-    {
-        error();
-    }
-    else if (moc>lista->odcienie)
-    {
-        printf("moc poza zakresem\n");
-        return STOP;
-    }
-    return moc;
-
-}
-void pociemnij( element *lista)
-{
-    int moc=pobierz_moc(lista);
-    if(moc != STOP)
-    {
-        int licznik_y=0, licznik_x=0;
-
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        {
-            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            {
-                if (lista->obraz[licznik_x][licznik_y] >= moc )
-                    lista->obraz[licznik_x][licznik_y] -= moc ;
-                else lista->obraz[licznik_x][licznik_y] = 0;
-            }
-        }
-
-        lista->czy_zmieniony = TAK;
-    }
-}
 void rozjasnij( element *lista)
 {
     int moc=pobierz_moc(lista);
@@ -544,99 +551,93 @@ void rozjasnij( element *lista)
         lista->czy_zmieniony = TAK;
     }
 }
-void black_white( element *lista)
+void rozmycie (element *lista)
 {
-    int moc=pobierz_moc(lista);
-    if(moc != STOP)
-    {
-        int licznik_y=0, licznik_x=0;
+    int licznik_x=0, licznik_y=0, licznik=0, **temp;
 
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    printf("podaj moc filtra, standardowo 1-5\n");
+    int moc=0;
+    if ( scanf("%d", &moc) != 1 )
+    {
+        error();
+    }
+    else if (moc>0 && lista->wymx>2*moc && lista->wymy>2*moc)
+    {
+
+        temp = (int**)malloc(lista->wymx * sizeof(int*));
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            temp[licznik] = (int*)malloc(lista->wymy * sizeof(int));
+
+        int sumator=0, i=0, j=0;
+        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
         {
-            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
             {
-                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
-                    lista->obraz[licznik_x][licznik_y] = 0 ;
-                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
+                sumator=0, i=0, j=0;
+
+                for(i=-moc; i<=moc; i++)
+                    for(j=-moc; j<=moc; j++)
+                        sumator+= lista->obraz[licznik_x+i][licznik_y+j] ;
+
+                temp[licznik_x][licznik_y] = sumator/(((2*moc) + 1)*((2*moc)+1));
             }
         }
+        moc--;
+        while(moc>0)
+        {
+            int k=0;
+            for(k=0; k<2; k++)//musi sie wykonać 2 razy, dla storny lewej i prawej
+            {
+                int ty=moc;
+                for(licznik_x=ty; licznik_x<lista->wymx-ty; licznik_x++)
+                {
+                    sumator=0, i=0, j=0;
+                    for(i=-moc; i<=moc; i++)
+                        for(j=-moc; j<=moc; j++)
+                            sumator+= lista->obraz[licznik_x+i][ty+j] ;
+
+                    temp[licznik_x][moc] = sumator/((2*moc + 1)*(2*moc+1));
+                }
+                ty = lista->wymy-moc;
+            }
+            for(k=0; k<2; k++) //musi sie wykonać 2 razy, dla storny lewej i prawej
+            {
+                int tx=moc;
+                for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+                {
+                    sumator=0, i=0, j=0;
+
+                    for(i=-moc; i<=moc; i++)
+                        for(j=-moc; j<=moc; j++)
+                            sumator+= lista->obraz[tx+i][licznik_y+j] ;
+
+                    temp[moc][licznik_y] = sumator/((2*moc + 1)*(2*moc+1));
+                }
+                tx = lista->wymx-moc;
+            }
+            moc--;
+        }
+
+        for(licznik_x=moc; licznik_x<lista->wymx-moc; licznik_x++)
+        {
+            for(licznik_y=moc; licznik_y<lista->wymy-moc; licznik_y++)
+            {
+                lista->obraz[licznik_x][licznik_y] = temp[licznik_x][licznik_y];
+            }
+        }
+
+        for(licznik = 0; licznik < lista->wymx; licznik++)
+            free(temp[licznik]);
+        free(temp);
+
         lista->czy_zmieniony = TAK;
     }
 }
-void kontury( element *lista)
+void sukces()
 {
-    printf("standardowa moc to ok %d\n", lista->odcienie/2);
-    int moc=pobierz_moc(lista);
-    if(moc != STOP)
-    {
-        int licznik_y=0, licznik_x=0;
-
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        {
-            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            {
-                if (lista->obraz[licznik_x][licznik_y] + moc <= lista->odcienie )
-                    lista->obraz[licznik_x][licznik_y] = 0 ;
-                else lista->obraz[licznik_x][licznik_y] = lista->odcienie;
-            }
-        }
-
-        int licznik=0;
-        int **t;
-        t = (int**)malloc(lista->wymx * sizeof(int*));
-
-        for(licznik = 0; licznik < lista->wymx; licznik++)
-            t[licznik] = (int*)malloc(lista->wymy * sizeof(int));
-
-        int test=0;
-        for(licznik_y=1; licznik_y<lista->wymy-1; licznik_y++)
-        {
-            for(licznik_x=1; licznik_x<lista->wymx-1; licznik_x++)
-            {
-                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x+1][licznik_y] )
-                    test++;
-                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
-                    test++;
-                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x-1][licznik_y] )
-                    test++;
-                if (lista->obraz[licznik_x][licznik_y] != lista->obraz[licznik_x][licznik_y+1] )
-                    test++;
-
-                if(test > 0)
-                    t[licznik_x][licznik_y] = 0 ;
-
-                else
-                    t[licznik_x][licznik_y] = lista->odcienie;
-                test=0;
-            }
-        }
-        for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-        {
-            for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-            {
-                lista->obraz[licznik_x][licznik_y]=t[licznik_x][licznik_y];
-            }
-        }
-        for(licznik = 0; licznik < lista->wymx; licznik++)
-            free(t[licznik]);
-        free(t);
-
-        lista->czy_zmieniony = TAK;
-    }
+    printf("edycja zakończona sukcesem!\n");
 }
-void negatyw (element *lista)
-{
-    int licznik_y=0, licznik_x=0;
 
-    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
-    {
-        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
-        {
-            lista->obraz[licznik_x][licznik_y] = lista->odcienie -lista->obraz[licznik_x][licznik_y];
-        }
-    }
-    lista->czy_zmieniony = TAK;
-}
 #endif // EDIT_H_INCLUDED
 
 

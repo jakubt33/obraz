@@ -1,10 +1,10 @@
 #ifndef INIT_H_INCLUDED
 #define INIT_H_INCLUDED
 
-#define MAXCOMMENT 1000
+
+#define MAXCOMMENT 10000
 #define MAXNAZWA 20
 
-void error();
 
 typedef struct element
 {
@@ -19,12 +19,5 @@ typedef struct element
     int **obraz;
     char nazwa[MAXNAZWA];
 } element;
-
-
-void error()
-{
-    while((getchar()) != '\n');
-    printf("zła komenda\n");
-}
 
 #endif // INIT_H_INCLUDED

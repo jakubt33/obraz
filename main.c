@@ -13,5 +13,5 @@ int main()
 }
 //laplace
 //instrukcja
-//czyszczenie pamieci!!! chyba juz jest
 //ustawienie voidow w jakiejs kolejnosci
+//scalanie

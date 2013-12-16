@@ -11,12 +11,15 @@
 #include "edit.h"
 
 
+
+
 void menu(element *lista);
-void wyswietl(element *);
+void podpis();
 element * usun(element *);
+void wyswietl(element *);
 void zapisz1(element *lista);
 void zapisz2(element * lista, int polecenie);
-void podpis();
+
 
 
 void menu(element *lista)
@@ -38,7 +41,7 @@ void menu(element *lista)
                "36 - Znajdz kontury\n"
                "37 - Zmień kontrast\n"
                "38 - Rozmycie\n"
-               "39 - Negatyw\n" //dorobic
+               "39 - Negatyw\n"
                "-------------------\n"
                "41 - Obrót w prawo o 90 stopni\n"
                "42 - Obrót w lewo o 90 stopni\n"
@@ -95,6 +98,53 @@ void menu(element *lista)
             }
             }
         }
+    }
+}
+void podpis()
+{
+    printf("\n--------------------\n"
+           "JAKUB TRZYNA 205687\n"
+           "programowanie w C\n"
+           "--------------------\n");
+}
+element * usun(element *first)
+{
+    if(first==NULL)
+    {
+        printf("\nlista juz jest pusta\n");
+        return NULL;
+    }
+    usun(first->next);
+    free(first);
+
+    int licznik=0;
+    for(licznik = 0; licznik < first->wymx; licznik++)
+            free(first->obraz[licznik]);
+        free(first->obraz);
+    return NULL;
+}
+void wyswietl(element *first)
+{
+    if(first==NULL)
+    {
+        printf("lista jest pusta\n");
+    }
+    else
+    {
+        do
+        {
+            printf("\n%d. nazwa obrazu: %s\t", first->numer, first->nazwa);
+            printf("typ obrazu to %s\n", first->type);
+            if(first->czy_zmieniony == TAK) printf("obrazek jest zmienieniony\n");
+            else printf("obrazek jest niezmienieniony\n");
+            printf("komentarz to:\n%s\n", first->comment);
+
+            first=first->next;
+        }
+        while(first!=NULL);
+        printf("\n[enter] aby porwóić do widoku menu\n");
+        getchar();
+        getchar();
     }
 }
 void zapisz1(element *lista)
@@ -186,52 +236,6 @@ void zapisz2(element * lista, int polecenie)
         }
     }
 }
-void wyswietl(element *first)
-{
-    if(first==NULL)
-    {
-        printf("lista jest pusta\n");
-    }
-    else
-    {
-        do
-        {
-            printf("\n%d. nazwa obrazu: %s\t", first->numer, first->nazwa);
-            printf("typ obrazu to %s\n", first->type);
-            if(first->czy_zmieniony == TAK) printf("obrazek jest zmienieniony\n");
-            else printf("obrazek jest niezmienieniony\n");
-            printf("komentarz to:\n%s\n", first->comment);
 
-            first=first->next;
-        }
-        while(first!=NULL);
-        printf("\n[enter] aby porwóić do widoku menu\n");
-        getchar();
-        getchar();
-    }
-}
-element * usun(element *first)
-{
-    if(first==NULL)
-    {
-        printf("\nlista juz jest pusta\n");
-        return NULL;
-    }
-    usun(first->next);
-    free(first);
-
-    int licznik=0;
-    for(licznik = 0; licznik < first->wymx; licznik++)
-            free(first->obraz[licznik]);
-        free(first->obraz);
-    return NULL;
-}
-void podpis()
-{
-    printf("\n--------------------\n"
-           "JAKUB TRZYNA 205687\n"
-           "programowanie w C\n"
-           "--------------------\n");
-}
 #endif // MENU_H_INCLUDED
 
