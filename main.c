@@ -11,7 +11,3 @@ int main()
     podpis();
     return 0;
 }
-//laplace
-//instrukcja
-//ustawienie voidow w jakiejs kolejnosci
-//scalanie

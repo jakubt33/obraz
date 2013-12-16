@@ -114,13 +114,14 @@ element * usun(element *first)
         printf("\nlista juz jest pusta\n");
         return NULL;
     }
-    usun(first->next);
-    free(first);
 
     int licznik=0;
     for(licznik = 0; licznik < first->wymx; licznik++)
             free(first->obraz[licznik]);
         free(first->obraz);
+
+        usun(first->next);
+    free(first);
     return NULL;
 }
 void wyswietl(element *first)

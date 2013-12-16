@@ -184,9 +184,8 @@ void sprawdz_komentarz(FILE *pFile, element *temp)
         odczyt_komentarza(pFile, temp);
         sprawdz_komentarz(pFile, temp);
     }
-    else if (test != '\n')
+    else
         fseek(pFile, -1, SEEK_CUR);
-    else ;
 
 }
 int sprawdz_typ(FILE *pFile, element *temp)

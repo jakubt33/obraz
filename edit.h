@@ -555,7 +555,7 @@ void rozmycie (element *lista)
 {
     int licznik_x=0, licznik_y=0, licznik=0, **temp;
 
-    printf("podaj moc filtra, standardowo 1-5\n");
+    printf("podaj moc filtra, standardowo 1-3\n");
     int moc=0;
     if ( scanf("%d", &moc) != 1 )
     {

@@ -2,7 +2,7 @@
 #define INIT_H_INCLUDED
 
 
-#define MAXCOMMENT 10000
+#define MAXCOMMENT 100000
 #define MAXNAZWA 20
 
 
