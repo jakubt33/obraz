@@ -17,6 +17,7 @@ void rozciagnij(element *lista);
 void rozmycie (element *lista);
 void sukces();
 int pobierz_moc(element *lista);
+void negatyw (element *lista);
 
 
 void edycja(element *lista, int komenda)
@@ -90,6 +91,12 @@ void edycja(element *lista, int komenda)
                     case 38:
                     {
                         rozmycie( lista );
+                        sukces();
+                        break;
+                    }
+                    case 39:
+                    {
+                        negatyw( lista );
                         sukces();
                         break;
                     }
@@ -616,6 +623,19 @@ void kontury( element *lista)
 
         lista->czy_zmieniony = TAK;
     }
+}
+void negatyw (element *lista)
+{
+    int licznik_y=0, licznik_x=0;
+
+    for(licznik_y=0; licznik_y<lista->wymy; licznik_y++)
+    {
+        for(licznik_x=0; licznik_x<lista->wymx; licznik_x++)
+        {
+            lista->obraz[licznik_x][licznik_y] = lista->odcienie -lista->obraz[licznik_x][licznik_y];
+        }
+    }
+    lista->czy_zmieniony = TAK;
 }
 #endif // EDIT_H_INCLUDED
 

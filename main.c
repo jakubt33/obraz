@@ -11,8 +11,7 @@ int main()
     podpis();
     return 0;
 }
-//negatyw
 //laplace
 //instrukcja
-//czyszczenie pamieci!!!
+//czyszczenie pamieci!!! chyba juz jest
 //ustawienie voidow w jakiejs kolejnosci

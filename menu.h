@@ -219,6 +219,11 @@ element * usun(element *first)
     }
     usun(first->next);
     free(first);
+
+    int licznik=0;
+    for(licznik = 0; licznik < first->wymx; licznik++)
+            free(first->obraz[licznik]);
+        free(first->obraz);
     return NULL;
 }
 void podpis()
